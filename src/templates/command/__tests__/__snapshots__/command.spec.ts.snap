@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command Should render the command template 1`] = `
+"import { Command } from "@typescript-ddd/core";
+
+/** Represents a create user command. */
+export class CreateUserCommand implements Command {
+    /**
+     * Initializes a new instance of a create user command.
+     * @param {string} name - The user's name.
+     * @param {string} email - The user's email address.
+     */
+    constructor(public readonly name: string, public readonly email: string) {
+        // TODO: Add validation
+    }
+}    
+"
+`;

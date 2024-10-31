@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityCreator Should render the entity creator template 1`] = `
+"import { DomainEventBus, Uuid } from "@typescript-ddd/core";
+import { User, UserId, CreateUserProps, UserRepository } from "@src/domain";
+
+/** Represents a user creator. */
+export class UserCreator {
+    /**
+     * Initializes a new instance of a user creator.
+     * @param {UserRepository} repository - The user repository.
+     * @param {DomainEventBus} domainEventBus - The domain event bus.
+     */
+    private constructor(private readonly repository: UserRepository, private readonly domainEventBus: DomainEventBus) {
+    }
+
+    /**
+     * Creates a new user.
+     * @param {CreateUserProps} props - The properties to create the user.
+     * @returns {Promise<User>} The created user.
+     */
+    public async create(props: CreateUserProps): Promise<User> {
+        const user = User.create(props, UserId.create());
+        await this.repository.save(user);
+        const events = user.getUncommittedEvents();
+        this.domainEventBus.publish(...events);
+        return user;
+    }
+}    
+"
+`;

@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityId Should render the entity id component 1`] = `
+"import { EntityId, Uuid } from "@typescript-ddd/core";
+
+/**
+ * Represents the unique identifier of a user.
+ * @extends {EntityId}
+ */
+export class UserId extends EntityId {
+    /**
+     * Initializes a new instance of a user identifier.
+     * @param value The value of the identifier.
+     */
+    private constructor(value: string) {
+        super(value);
+    }
+
+    /**
+     * Creates a new instance of a user identifier.
+     * @returns {UserId} - A user identifier.
+     */
+    static create(): UserId {
+        return new UserId(Uuid.create().value);
+    }
+
+    /**
+     * Creates a new instance of a user identifier from its value.
+     * @param {string} value - The value of the identifier.
+     * @throws {InvariantViolationError} - When the value is null, empty or invalid.
+     * @returns {UserId} - A user identifier.
+     */
+    static fromValue(value: string): UserId {
+        return new UserId(value);
+    }
+}    
+"
+`;

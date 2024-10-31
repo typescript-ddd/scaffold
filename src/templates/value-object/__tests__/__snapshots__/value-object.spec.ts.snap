@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ValueObject Should render the value object component 1`] = `
+"import { InvariantViolationError, ValueObject } from "@typescript-ddd/core";
+
+/**
+ * Represents a first name value.
+ * @extends {ValueObject}
+ */
+export class FirstName extends ValueObject<string> {
+    /**
+     * Initializes a new instance of a first name value.
+     * @param {string} value - a string value.
+     */
+    private constructor(value: string) {
+        super(value);
+        if (!FirstName.validate(value)) {
+          throw new InvariantViolationError("Invalid value for a first name.");
+        }
+    }
+
+    /** @inhertiDoc */
+    protected selfEquals(other: FirstName): boolean {
+        return this.value === other.value;
+    }
+
+    /**
+     * Validates the value of a first name.
+     * @param {string} value - The value to validate.
+     * @returns {boolean} - True if the value is valid, otherwise false.
+     */
+    static validate(value: string): boolean {
+        // TODO : Implement validation
+        return true;
+    }
+
+    /**
+     * Creates a new instance of a first name value.
+     * @returns {FirstName} - A first name value.
+     */
+    static create(value: string): FirstName {
+        return new FirstName(value);
+    }
+}    
+"
+`;
+
+exports[`ValueObject Should render the value object component with properties 1`] = `
+"import { InvariantViolationError, ValueObject } from "@typescript-ddd/core";
+
+/** Represents the value properties of a phone. */
+export interface PhoneProps {
+    number: string;
+}
+
+/**
+ * Represents a phone value.
+ * @extends {ValueObject}
+ */
+export class Phone extends ValueObject<PhoneProps> {
+    /**
+     * Initializes a new instance of a phone value.
+     * @param {PhoneProps} value - a phone props value.
+     */
+    private constructor(value: PhoneProps) {
+        super(value);
+        if (!Phone.validate(value)) {
+          throw new InvariantViolationError("Invalid value for a phone.");
+        }
+    }
+
+    /**
+     * Gets the number value.
+     * @returns {string} - The number value.
+     */
+    getNumber(): string {
+        return this.value.number;
+    }
+
+    /** @inhertiDoc */
+    protected selfEquals(other: Phone): boolean {
+        //TODO: Implement value comparison
+        return false;
+    }
+
+    /**
+     * Validates the value of a phone.
+     * @param {PhoneProps} value - The value to validate.
+     * @returns {boolean} - True if the value is valid, otherwise false.
+     */
+    static validate(value: PhoneProps): boolean {
+        // TODO : Implement validation
+        return true;
+    }
+
+    /**
+     * Creates a new instance of a phone value.
+     * @returns {Phone} - A phone value.
+     */
+    static create(value: string): Phone {
+        return new Phone(value);
+    }
+}    
+"
+`;

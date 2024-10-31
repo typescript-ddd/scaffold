@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainError should generate domain error 1`] = `
+"import { DomainError } from "@typescript-ddd/core";
+
+/** Represents a user locked out error. */
+export class UserLockedOutError extends DomainError {
+    /** Initializes a new instance of a user locked out. */
+    constructor() {
+        super(\`User is locked out.\`);
+    }
+}    
+"
+`;
+
+exports[`DomainError should generate domain error with properties 1`] = `
+"import { DomainError } from "@typescript-ddd/core";
+import { UserId } from "@src/domain";
+
+/** Represents a user already exists error. */
+export class UserAlreadyExistsError extends DomainError {
+    /** Initializes a new instance of a user already exists. */
+    constructor(id: UserId) {
+        super(\`User for \${id} already exists.\`);
+    }
+}    
+"
+`;

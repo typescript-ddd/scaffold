@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainEventSubscriber should generate domain event subscriber 1`] = `
+"import { DomainEventSubscriber } from "@typescript-ddd/core";
+import { UserCreatedEvent } from "@src/domain/event";
+
+/** Represents a user created event subscriber. */
+export class UserCreatedEventSubscriber implements DomainEventSubscriber<UserCreatedEvent> {
+    on(event: UserCreatedEvent): void {
+        // TODO: Implement subscriber logic.
+    }
+}    
+"
+`;

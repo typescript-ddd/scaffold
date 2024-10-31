@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityFinder Should render the entity finder template 1`] = `
+"import { Criteria, DomainEventBus, EntityNotFoundError, Uuid } from "@typescript-ddd/core";
+import { User, UserId, UserRepository } from "@src/domain";
+
+/** Represents a user finder. */
+export class UserFinder {
+    /**
+     * Initializes a new instance of a user finder.
+     * @param {UserRepository} repository - The user repository.
+     * @param {DomainEventBus} domainEventBus - The domain event bus.
+     */
+    private constructor(private readonly repository: UserRepository, private readonly domainEventBus: DomainEventBus) {
+    }
+
+    /**
+     * Finds a user by a user identifier.
+     * @param {UserId} id - The identifier of the user.
+     * @returns {Promise<User>} The user.
+     */
+    public async findById(id: UserId): Promise<User> {
+        const user = await this.repository.getById(id);
+        if (!user) {
+          throw new EntityNotFoundError("User", id);
+        }
+        return user;
+    }
+
+    /**
+     * Finds all users with the specified criteria.
+     * @param {Criteria} criteria - The criteria to find the users.
+     * @returns {Promise<User[]>} The users matching the criteria.
+     */
+    async findAll(criteria: Criteria): Promise<User[]> {
+        const users = await this.repository.getAll(criteria);
+        return users;
+    }
+}    
+"
+`;

@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QueryAction should generate a query action template 1`] = `
+"import { QueryAction, QueryBus } from "@typescript-ddd/core";
+
+/** Represents a get user action. */
+export class GetUserAction extends QueryAction {
+    /**
+     * Initializes a new instance of a get user action.
+     * @param {QueryBus} queryBus - The query bus.
+     */
+    constructor(readonly queryBus: QueryBus) {
+        super(queryBus);
+    }
+
+    readonly method: string = "GET";
+    readonly path: string = "/user/:id";
+
+    /**
+     * Executes the a get user action.
+     * @param {any} req - The request object.
+     * @param {any} res - The response object.
+     * @param {any} ctx - The context object.
+     */
+    async execute(req: any, res: any, ctx: any): Promise<void> {
+        // TODO: Implement action logic.
+        res.json({ message: "Hello, World!" });
+    }
+}    
+"
+`;

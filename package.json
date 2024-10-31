@@ -1,0 +1,44 @@
+{
+  "name": "@typescript-ddd/scaffold",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "description": "A scaffold tool for TypeScript DDD projects",
+  "keywords": [
+    "typescript",
+    "ddd",
+    "scaffold"
+  ],
+  "author": "John Robinson",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c",
+    "prepare": "npm run build",
+    "test": "jest",
+    "publish": "npm version patch --no-git-tag-version && npm publish --access public"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.8.1",
+    "@types/pluralize": "^0.0.33",
+    "jest": "^29.7.0",
+    "rimraf": "^6.0.1",
+    "rollup": "4.24.0",
+    "rollup-plugin-typescript2": "0.36.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.3"
+  },
+  "peerDependencies": {
+    "pluralize": "^8.0.0"
+  },
+  "dependencies": {
+    "pluralize": "^8.0.0",
+    "ts-morph": "^24.0.0"
+  }
+}

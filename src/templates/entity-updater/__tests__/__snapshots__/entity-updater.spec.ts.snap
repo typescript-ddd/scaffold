@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityUpdater Should render the entity updater template 1`] = `
+"import { DomainEventBus } from "@typescript-ddd/core";
+import { User, UpdateUserProps, UserRepository } from "@src/domain";
+import { UserFinder } from "@src/application";
+
+/** Represents a user updater. */
+export class UserUpdater {
+    /**
+     * Initializes a new instance of a user updater.
+     * @param {UserFinder} finder - The user finder.
+     * @param {UserRepository} repository - The user repository.
+     * @param {DomainEventBus} domainEventBus - The domain event bus.
+     */
+    private constructor(private readonly finder: UserFinder, private readonly repository: UserRepository, private readonly domainEventBus: DomainEventBus) {
+    }
+
+    /**
+     * Updates a user.
+     * @param {UpdateUserProps} props - The properties to update the user.
+     * @returns {Promise<User>} The updated user.
+     */
+    public async update(props: UpdateUserProps): Promise<User> {
+        const user = await this.finder.findById(props.id);
+        user.update(props);
+        await this.repository.save(user);
+        const events = user.getUncommittedEvents();
+        this.domainEventBus.publish(...events);
+        return user;
+    }
+}    
+"
+`;

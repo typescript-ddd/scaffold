@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainEvent Should render template 1`] = `
+"import { DomainEvent } from "@typescript-ddd/core";
+import { User, UserId } from "@src/domain";
+
+/** Represents a user created event. */
+export class UserCreatedEvent extends DomainEvent<User> {
+    /**
+     * Initializes a new instance of a user created event.
+     * @param {UserId} id - The identifier of the user.
+     * @param {User} payload - The user payload.
+     */
+    constructor(id: UserId, payload: User) {
+        super(id, "user/created", payload);
+    }
+}    
+"
+`;

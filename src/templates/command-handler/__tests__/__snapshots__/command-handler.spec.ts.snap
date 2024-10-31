@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CommandHandler Should render the command handler template 1`] = `
+"import { CommandHandler } from "@typescript-ddd/core";
+import { UserView } from "@src/domain/view";
+import { CreateUserCommand, UserCreator } from "@src/application/create";
+
+/** Represents a create user handler. */
+export class CreateUserHandler implements CommandHandler<CreateUserCommand> {
+    /**
+     * Initializes a new instance of a create user handler.
+     * @param {UserCreator} creator - The creator to handle the command.
+     */
+    constructor(private readonly creator: UserCreator) {
+    }
+
+    /**
+     * Handles a create user command.
+     * @param {CreateUserCommand} command - The command to handle.
+     * @returns {Promise<UserView>} - A user view.
+     */
+    async handle(command: CreateUserCommand): Promise<UserView> {
+        const user = await this.creator.create({
+          name: command.name
+        });
+        return UserView.create(user);
+    }
+}    
+"
+`;

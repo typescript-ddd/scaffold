@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CommandAction should generate command action 1`] = `
+"import { CommandAction, CommandBus } from "@typescript-ddd/core";
+
+/** Represents a get user action. */
+export class GetUserAction extends CommandAction {
+    /**
+     * Initializes a new instance of a get user action.
+     * @param {CommandBus} commandBus - The command bus.
+     */
+    constructor(readonly commandBus: CommandBus) {
+        super(commandBus);
+    }
+
+    readonly method: string = "GET";
+    readonly path: string = "/user/:id";
+
+    /**
+     * Executes the a get user action.
+     * @param {any} req - The request object.
+     * @param {any} res - The response object.
+     * @param {any} ctx - The context object.
+     */
+    async execute(req: any, res: any, ctx: any): Promise<void> {
+        // TODO: Implement action logic.
+        res.json({ message: "Hello, World!" });
+    }
+}    
+"
+`;

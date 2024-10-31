@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityView Should render the entity view template 1`] = `
+"import "@typescript-ddd/core";
+import { User } from "@src/domain";
+
+/** Represents a user view. */
+export class UserView {
+    /**
+     * Initializes a new instance of a user view.
+     * @param {string} id - The entity id.
+     */
+    private constructor(user: User) {
+        this.id = user.id.value;
+        this.name = user.getName();
+    }
+
+    /** The id of the user. */
+    public readonly id: string;
+    /** The name of the user. */
+    public readonly name: string;
+
+    static create(user: User): UserView {
+        return new UserView(user);
+    }
+
+    static createMany(user: User[]): UserView[] {
+        return user.map(user => UserView.create(user));
+    }
+}
+"
+`;

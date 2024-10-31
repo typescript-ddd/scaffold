@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityDeleter Should render the entity deleter template 1`] = `
+"import { DomainEventBus } from "@typescript-ddd/core";
+import { User, UserId, UserRepository } from "@src/domain";
+import { UserFinder } from "@src/application";
+
+/** Represents a user deleter. */
+export class UserDeleter {
+    /**
+     * Initializes a new instance of a user deleter.
+     * @param {UserRepository} repository - The user repository.
+     * @param {DomainEventBus} domainEventBus - The domain event bus.
+     */
+    private constructor(private readonly finder: UserFinder, private readonly repository: UserRepository, private readonly domainEventBus: DomainEventBus) {
+    }
+
+    /**
+     * Deletes a user.
+     * @param {UserId} id - The identity of the user to delete.
+     * @returns {Promise<void>}
+     */
+    public async delete(id: UserId): Promise<User> {
+        const user = await this.finder.findById(id);
+        user.delete();
+        await this.repository.remove(id);
+        const events = user.getUncommittedEvents();
+        this.domainEventBus.publish(...events);
+        return user;
+    }
+}    
+"
+`;

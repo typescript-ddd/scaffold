@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Entity Should render the entity component 1`] = `
+"import { Entity, EntityCreateProps, EntityUpdateProps  } from "@typescript-ddd/core";
+import { InvoiceId, OrderId } from "@src/domain/models";
+
+/**
+ * Represents the properties required to create a invoice.
+ * @extends {EntityCreateProps}
+ */
+export interface CreateInvoiceProps extends EntityCreateProps {
+    orderId: OrderId;
+}
+/**
+ * Represents the properties required to update a invoice.
+ * @extends {EntityUpdateProps}
+ */
+export interface UpdateInvoiceProps extends EntityUpdateProps<InvoiceId> {
+    orderId: OrderId;
+}
+/**
+ * Represents a invoice entity.
+ * @extends Entity
+ */
+export class Invoice extends Entity<InvoiceId> {
+    /**
+     * Initializes a new instance of a invoice.
+     * @param {InvoiceId} id - An optional identifier of the invoice.
+     * @param {OrderId} orderId - The orderId of the invoice.
+     */
+    private constructor(id?: InvoiceId, private orderId: OrderId) {
+        super(id ?? InvoiceId.create());
+    }
+
+    /**
+     * Gets the orderId of the invoice.
+     * @returns {OrderId} - The orderId of the invoice.
+     */
+    getOrderId(): OrderId {
+        return this.orderId;
+    }
+
+    /**
+     * Update the invoice.
+     * @param {UpdateInvoiceProps} props - The properties to update.
+     * @returns void
+     */
+    update(props: UpdateInvoiceProps): void {
+        // TODO: validate props
+        this.orderId = props.orderId;
+        this.applyChange(new InvoiceUpdatedEvent(this.id, this));
+    }
+}    
+"
+`;
+
+exports[`Entity Should render the trackable entity component 1`] = `
+"import { TrackableEntity, EntityCreateProps, EntityUpdateProps, UtcDate } from "@typescript-ddd/core";
+import { InvoiceId, OrderId } from "@src/domain/models";
+
+/**
+ * Represents the properties required to create a invoice.
+ * @extends {EntityCreateProps}
+ */
+export interface CreateInvoiceProps extends EntityCreateProps {
+    orderId: OrderId;
+    createdAtUtc?: UtcDate;
+    updatedAtUtc?: UtcDate;
+}
+/**
+ * Represents the properties required to update a invoice.
+ * @extends {EntityUpdateProps}
+ */
+export interface UpdateInvoiceProps extends EntityUpdateProps<InvoiceId> {
+    orderId: OrderId;
+}
+/**
+ * Represents a invoice entity.
+ * @extends TrackableEntity
+ */
+export class Invoice extends TrackableEntity<InvoiceId> {
+    /**
+     * Initializes a new instance of a invoice.
+     * @param {InvoiceId} id - An optional identifier of the invoice.
+     * @param {OrderId} orderId - The orderId of the invoice.
+     * @param {UtcDate} createdAtUtc - An optional creation date.
+     * @param {UtcDate} updatedAtUtc - An optional last update date.
+     */
+    private constructor(id?: InvoiceId, private orderId: OrderId, createdAtUtc?: UtcDate, updatedAtUtc?: UtcDate) {
+        super(id ?? InvoiceId.create(), createdAtUtc, updatedAtUtc);
+    }
+
+    /**
+     * Gets the orderId of the invoice.
+     * @returns {OrderId} - The orderId of the invoice.
+     */
+    getOrderId(): OrderId {
+        return this.orderId;
+    }
+
+    /**
+     * Update the invoice.
+     * @param {UpdateInvoiceProps} props - The properties to update.
+     * @returns void
+     */
+    update(props: UpdateInvoiceProps): void {
+        // TODO: validate props
+        this.orderId = props.orderId;
+        this.updatedAtUtc = UtcDate.now();
+        this.applyChange(new InvoiceUpdatedEvent(this.id, this));
+    }
+}    
+"
+`;

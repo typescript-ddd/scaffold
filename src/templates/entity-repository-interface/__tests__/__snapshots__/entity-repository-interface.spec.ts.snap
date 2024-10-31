@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntityRepositoryInterface Should render template 1`] = `
+"import { Repository } from "@typescript-ddd/core";
+import { User, UserId } from "@src/domain";
+
+/** Represents a user repository interface. */
+export interface UserRepository extends Repository<UserId,User> {}    
+"
+`;
