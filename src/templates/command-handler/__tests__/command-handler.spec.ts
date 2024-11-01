@@ -30,5 +30,5 @@ describe("CommandHandler", () => {
         );
 
         expect(output).toMatchSnapshot();
-    });
+    });    
 })

@@ -19,7 +19,8 @@ describe("CommandHandler", () => {
             {
                 entityName: "User",
                 actor: "UserFinder",
-                returnType: "UserView",
+                returnType: "UserView[]",
+                actionName: "findAll",
                 returnsView: true,
                 queryProperties: [
                     { name: "name", type: "string" },

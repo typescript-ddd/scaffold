@@ -91,10 +91,11 @@ export class ${className} implements QueryHandler<${queryType}> {}
       parameters: [{ name: "query", type: queryType }],
     })
     .setBodyText((writer) => {
+      const isArray = returnType.endsWith("[]");
+      const returnName = isArray ? strings.plural(strings.lower(entityName)) : strings.lower(entityName);
+
       writer.writeLine(
-        `const ${strings.lower(
-          entityName
-        )} = await this.${actorName}.${strings.lower(actionName)}(`
+        `const ${returnName} = await this.${actorName}.${strings.camel(actionName)}(`
       );
       queryProperties.forEach((property, index) => {
         writer.writeLine(
@@ -105,9 +106,10 @@ export class ${className} implements QueryHandler<${queryType}> {}
       });
       writer.writeLine(`);`);
       if (!returnsView) {
-        writer.writeLine(`return ${strings.lower(entityName)};`);
+        writer.writeLine(`return ${returnName};`);
       } else {
-        writer.writeLine(`return ${returnType}.create(${strings.lower(entityName)});`);
+        const viewCreator = returnType.endsWith("[]") ? returnType.slice(0, -2) : returnType;
+        writer.writeLine(`return ${viewCreator}.${isArray ? "createMany" : "create"}(${strings.lower(entityName)});`);
       }
     })
     .addJsDoc({

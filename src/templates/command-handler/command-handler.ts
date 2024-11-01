@@ -92,10 +92,11 @@ export class ${className} implements CommandHandler<${commandType}> {}
       parameters: [{ name: "command", type: commandType }],
     })
     .setBodyText((writer) => {
+      const isArray = returnType.endsWith("[]");
+      const returnName = isArray ? strings.plural(strings.lower(entityName)) : strings.lower(entityName);
+
       writer.writeLine(
-        `const ${strings.lower(
-          entityName
-        )} = await this.${actorName}.${strings.lower(actionName)}({`
+        `const ${returnName} = await this.${actorName}.${strings.lower(actionName)}({`
       );
       commandProperties.forEach((property, index) => {
         writer.writeLine(
@@ -107,9 +108,10 @@ export class ${className} implements CommandHandler<${commandType}> {}
       writer.writeLine(`});`);
 
       if (!returnsView) {
-        writer.writeLine(`return ${strings.lower(entityName)};`);
+        writer.writeLine(`return ${returnName};`);
       } else {
-        writer.writeLine(`return ${returnType}.create(${strings.lower(entityName)});`);
+        const viewCreator = returnType.endsWith("[]") ? returnType.slice(0, -2) : returnType;
+        writer.writeLine(`return ${viewCreator}.${isArray ? "createMany" : "create"}(${returnName});`);
       }
     })
     .addJsDoc({
