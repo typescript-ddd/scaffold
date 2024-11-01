@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CommandHandler Should render the command handler template 1`] = `
+"import { QueryHandler } from "@typescript-ddd/core";
+import { UserView } from "@src/domain";
+import { FindUserQuery, UserFinder } from "@src/application";
+
+/** Represents a find user handler. */
+export class FindUserHandler implements QueryHandler<FindUserQuery> {
+    /**
+     * Initializes a new instance of a find user handler.
+     * @param {UserFinder} finder - The finder to handle the query.
+     */
+    constructor(private readonly finder: UserFinder) {
+    }
+
+    /**
+     * Handles a find user query.
+     * @param {FindUserQuery} query - The query to handle.
+     * @returns {Promise<UserView>} - A user view.
+     */
+    async handle(query: FindUserQuery): Promise<UserView> {
+        const user = await this.finder.find(
+          query.name
+        );
+        return UserView.find(user);
+    }
+}    
+"
+`;
