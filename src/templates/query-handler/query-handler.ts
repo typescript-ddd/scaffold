@@ -4,7 +4,7 @@ import { GenerateContext } from "../shared";
 
 const actorMap: Record<string, string> = {
   find: "finder",
-}
+};
 
 export type GenerateQueryHandlerOptions = {
   entityName: string;
@@ -12,14 +12,21 @@ export type GenerateQueryHandlerOptions = {
   actor: string;
   returnType: string;
   queryProperties: { name: string; type: string }[];
+  returnsView?: boolean;
 };
 
 export const generateQueryHandler = (
   options: GenerateQueryHandlerOptions,
   context: GenerateContext
 ) => {
-  const { entityName, actionName = "find", actor, queryProperties, returnType } =
-    options;
+  const {
+    entityName,
+    actionName = "find",
+    actor,
+    queryProperties,
+    returnType,
+    returnsView = false,
+  } = options;
   const entityType = strings.capitalize(entityName);
   const actionType = strings.capitalize(actionName);
   const actorType = strings.capitalize(actor);
@@ -53,20 +60,28 @@ export class ${className} implements QueryHandler<${queryType}> {}
     description: `Represents ${strings.describe(className)}.`,
   });
 
-  classDeclaration.addConstructor({
-    parameters: [{ name: actorName, type: actorType, isReadonly: true, scope: Scope.Private }],
-  })
-  .addJsDoc({
-    description: `Initializes a new instance of ${strings.describe(
-      className
-    )}.`,
-    tags: [
-      {
-        tagName: "param",
-        text: `{${actorType}} ${actorName} - The ${actorName} to handle the query.`,
-      },
-    ],
-  });
+  classDeclaration
+    .addConstructor({
+      parameters: [
+        {
+          name: actorName,
+          type: actorType,
+          isReadonly: true,
+          scope: Scope.Private,
+        },
+      ],
+    })
+    .addJsDoc({
+      description: `Initializes a new instance of ${strings.describe(
+        className
+      )}.`,
+      tags: [
+        {
+          tagName: "param",
+          text: `{${actorType}} ${actorName} - The ${actorName} to handle the query.`,
+        },
+      ],
+    });
 
   classDeclaration
     .addMethod({
@@ -77,9 +92,9 @@ export class ${className} implements QueryHandler<${queryType}> {}
     })
     .setBodyText((writer) => {
       writer.writeLine(
-        `const ${strings.lower(entityName)} = await this.${actorName}.${strings.lower(
-          actionName
-        )}(`
+        `const ${strings.lower(
+          entityName
+        )} = await this.${actorName}.${strings.lower(actionName)}(`
       );
       queryProperties.forEach((property, index) => {
         writer.writeLine(
@@ -89,11 +104,11 @@ export class ${className} implements QueryHandler<${queryType}> {}
         );
       });
       writer.writeLine(`);`);
-      writer.writeLine(
-        `return ${returnType}.${strings.lower(actionName)}(${strings.lower(
-          entityName
-        )});`
-      );
+      if (!returnsView) {
+        writer.writeLine(`return ${strings.lower(entityName)};`);
+      } else {
+        writer.writeLine(`return ${returnType}.create(${strings.lower(entityName)});`);
+      }
     })
     .addJsDoc({
       description: `Handles ${strings.describe(queryType)}.`,
@@ -104,10 +119,12 @@ export class ${className} implements QueryHandler<${queryType}> {}
         },
         {
           tagName: "returns",
-          text: `{Promise<${returnType}>} - ${strings.capitalize(strings.describe(returnType))}.`,
+          text: `{Promise<${returnType}>} - ${strings.capitalize(
+            strings.describe(returnType)
+          )}.`,
         },
       ],
-    })
+    });
 
   let output = sourceFile.getFullText();
 

@@ -23,7 +23,7 @@ export class FindUserHandler implements QueryHandler<FindUserQuery> {
         const user = await this.finder.find(
           query.name
         );
-        return UserView.find(user);
+        return UserView.create(user);
     }
 }    
 "

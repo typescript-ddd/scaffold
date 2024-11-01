@@ -6,7 +6,7 @@ const actorMap: Record<string, string> = {
   create: "creator",
   update: "updater",
   delete: "deleter",
-}
+};
 
 export type GenerateCommandHandlerOptions = {
   entityName: string;
@@ -14,14 +14,21 @@ export type GenerateCommandHandlerOptions = {
   actor: string;
   returnType: string;
   commandProperties: { name: string; type: string }[];
+  returnsView?: boolean;
 };
 
 export const generateCommandHandler = (
   options: GenerateCommandHandlerOptions,
   context: GenerateContext
 ) => {
-  const { entityName, actionName, actor, commandProperties, returnType } =
-    options;
+  const {
+    entityName,
+    actionName,
+    actor,
+    commandProperties,
+    returnType,
+    returnsView = false,
+  } = options;
   const entityType = strings.capitalize(entityName);
   const actionType = strings.capitalize(actionName);
   const actorType = strings.capitalize(actor);
@@ -56,7 +63,14 @@ export class ${className} implements CommandHandler<${commandType}> {}
   });
 
   const constructorDeclaration = classDeclaration.addConstructor({
-    parameters: [{ name: actorName, type: actorType, isReadonly: true, scope: Scope.Private }],
+    parameters: [
+      {
+        name: actorName,
+        type: actorType,
+        isReadonly: true,
+        scope: Scope.Private,
+      },
+    ],
   });
   constructorDeclaration.addJsDoc({
     description: `Initializes a new instance of ${strings.describe(
@@ -79,9 +93,9 @@ export class ${className} implements CommandHandler<${commandType}> {}
     })
     .setBodyText((writer) => {
       writer.writeLine(
-        `const ${strings.lower(entityName)} = await this.${actorName}.${strings.lower(
-          actionName
-        )}({`
+        `const ${strings.lower(
+          entityName
+        )} = await this.${actorName}.${strings.lower(actionName)}({`
       );
       commandProperties.forEach((property, index) => {
         writer.writeLine(
@@ -91,11 +105,12 @@ export class ${className} implements CommandHandler<${commandType}> {}
         );
       });
       writer.writeLine(`});`);
-      writer.writeLine(
-        `return ${returnType}.${strings.lower(actionName)}(${strings.lower(
-          entityName
-        )});`
-      );
+
+      if (!returnsView) {
+        writer.writeLine(`return ${strings.lower(entityName)};`);
+      } else {
+        writer.writeLine(`return ${returnType}.create(${strings.lower(entityName)});`);
+      }
     })
     .addJsDoc({
       description: `Handles ${strings.describe(commandType)}.`,
@@ -106,10 +121,12 @@ export class ${className} implements CommandHandler<${commandType}> {}
         },
         {
           tagName: "returns",
-          text: `{Promise<${returnType}>} - ${strings.capitalize(strings.describe(returnType))}.`,
+          text: `{Promise<${returnType}>} - ${strings.capitalize(
+            strings.describe(returnType)
+          )}.`,
         },
       ],
-    })
+    });
 
   let output = sourceFile.getFullText();
 

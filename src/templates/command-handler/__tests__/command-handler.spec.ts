@@ -21,6 +21,7 @@ describe("CommandHandler", () => {
                 actionName: "create",
                 actor: "UserCreator",
                 returnType: "UserView",
+                returnsView: true,
                 commandProperties: [
                     { name: "name", type: "string" },
                 ]

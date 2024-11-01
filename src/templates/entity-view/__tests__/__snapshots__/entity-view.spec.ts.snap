@@ -27,6 +27,6 @@ export class UserView {
     static createMany(user: User[]): UserView[] {
         return user.map(user => UserView.create(user));
     }
-}
+}    
 "
 `;
