@@ -14,7 +14,6 @@ npm run test
 ```
 ## Available Generators
 
-# Domain Models
 - Aggregate Root
 - Command
 - Command Action
