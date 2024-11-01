@@ -1,12 +1,12 @@
 {
   "name": "@typescript-ddd/scaffold",
-  "version": "0.0.4",
+  "version": "0.0.8",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "description": "A scaffold tool for TypeScript DDD projects",
+  "description": "A scaffold tool for generating TypeScript DDD types.",
   "keywords": [
     "typescript",
     "ddd",
@@ -14,12 +14,15 @@
   ],
   "author": "John Robinson",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typescript-ddd/scaffold.git"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c",
-    "prepare": "npm run build",
     "test": "jest",
-    "publish": "npm version patch --no-git-tag-version && npm publish --access public"
+    "publish": "npm publish --access public"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",

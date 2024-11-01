@@ -5,6 +5,7 @@ const pkg = require("./package.json")
 const path = require("path");
 
 module.exports = {
+  external: ["ts-morph", "pluralize"],
   input: path.join(__dirname, 'src/index.ts'),
   output: [
     {

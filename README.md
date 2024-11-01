@@ -1,11 +1,11 @@
 # TypeScript DDD
 
-A TypeScript library for domain driven design 
+A scaffolding tool for generating TypeScript DDD types.
 
 ## Installation
 
 ```bash
-npm install @typescript-ddd/core
+npm install @typescript-ddd/scaffold
 ```
 
 Run tests:
