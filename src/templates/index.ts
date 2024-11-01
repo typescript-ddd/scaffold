@@ -15,6 +15,7 @@ export * from "./entity-updater";
 export * from "./entity-view";
 export * from "./query";
 export * from "./query-action";
+export * from "./query-handler";
 export * from "./value-object";
 
 export { ContextBuilder, GenerateContext } from "./shared";
