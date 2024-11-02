@@ -29,6 +29,7 @@ export class ${name} extends ${baseName}<${idName}> {}
       baseName,
       "EntityCreateProps",
       "EntityUpdateProps",
+      "InvariantViolationError",
       trackable ? "UtcDate" : "",
     ],
   });
@@ -192,8 +193,12 @@ export class ${name} extends ${baseName}<${idName}> {}
               text: `{Update${name}Props} props - The properties to update.`,
             },
             {
+              tagName: "throws",
+              text: `{InvariantViolationError} - When the properties are invalid.`,
+            },
+            {
               tagName: "returns",
-              text: "void",
+              text: "{void}",
             },
           ],
         },
@@ -221,6 +226,12 @@ export class ${name} extends ${baseName}<${idName}> {}
       writer.writeLine(
         `this.applyChange(new ${name}DeletedEvent(this.id, this));`
       );
+    })
+    .addJsDoc({
+      description: `Delete the ${strings.lower(name)}.`,
+      tags: [
+        { tagName: "throws", text: `{InvariantViolationError} - When the operation is not allowed.` },
+        { tagName: "returns", text: "{void}" }],
     });
 
   classDeclaration
@@ -245,6 +256,23 @@ export class ${name} extends ${baseName}<${idName}> {}
       writer.writeLine(`  id`);
       writer.writeLine(`);`);
       writer.writeLine(`return ${strings.lower(name)};`);
+    })
+    .addJsDoc({
+      description: `Creates a new instance of ${strings.describe(name)}.`,
+      tags: [
+        {
+          tagName: "param",
+          text: `{Create${name}Props} props - The properties to create.`,
+        },
+        {
+          tagName: "throws",
+          text: `{InvariantViolationError} - When the properties are invalid.`,
+        },
+        {
+          tagName: "returns",
+          text: `{${name}} - The new instance of ${strings.describe(name)}.`,
+        },
+      ],
     });
 
   let output = sourceFile.getFullText();

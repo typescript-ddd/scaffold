@@ -34,7 +34,7 @@ npm run test
 - Query Handler
 - Value Object
 
-## Example
+## Code Example
 
 ```ts
 import { 
@@ -60,7 +60,7 @@ const values: AggregateRootTemplateValues = {
 
 /* Add a named import to the template */
 context.addImportDeclaration({
-    moduleSpecifier: `@src/domain`,
+    moduleSpecifier: context.resolveDir("domain", "models"),
     namedImports: ["Phone"],
 });
 
@@ -71,7 +71,7 @@ const output = template.generate(values, context);
 ### Output:
 
 ```ts
-import { AggregateRoot, EntityCreateProps, EntityUpdateProps  } from "@typescript-ddd/core";
+import { AggregateRoot, EntityCreateProps, EntityUpdateProps, InvariantViolationError  } from "@typescript-ddd/core";
 import { UserCreatedEvent, UserUpdatedEvent, UserDeletedEvent } from "@src/domain/events";
 import { Phone, UserId } from "@src/domain/models";
 
@@ -128,7 +128,8 @@ export class User extends AggregateRoot<UserId> {
     /**
      * Update the user.
      * @param {UpdateUserProps} props - The properties to update.
-     * @returns void
+     * @throws {InvariantViolationError} - When the properties are invalid.
+     * @returns {void}
      */
     update(props: UpdateUserProps): void {
         // TODO: validate props
@@ -137,10 +138,21 @@ export class User extends AggregateRoot<UserId> {
         this.applyChange(new UserUpdatedEvent(this.id, this));
     }
 
+    /**
+     * Delete the user.
+     * @throws {InvariantViolationError} - When the operation is not allowed.
+     * @returns {void}
+     */
     delete(): void {
         this.applyChange(new UserDeletedEvent(this.id, this));
     }
 
+    /**
+     * Creates a new instance of a user.
+     * @param {CreateUserProps} props - The properties to create.
+     * @throws {InvariantViolationError} - When the properties are invalid.
+     * @returns {User} - The new instance of a user.
+     */
     static create(props: CreateUserProps, id?: UserId): User {
         const user = new User(
           props.name,
