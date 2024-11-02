@@ -1,24 +1,25 @@
 import { ContextBuilder, GenerateContext } from "../../shared";
-import { generateCommand } from "../command";
+import { CommandTemplate } from "../command.template";
 
 describe("Command", () => {
   let context: GenerateContext;
+  let template: CommandTemplate;
 
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new CommandTemplate();
   });
 
   it("Should render the command template", () => {
-    const output = generateCommand(
+    const output = template.generate(
       {
         entityName: "User",
         actionName: "Create",
         properties: [
-          { name: "name", type: "string", description: "The user's name." },
+          { name: "name", valueType: "string", nullable: false },
           {
             name: "email",
-            type: "string",
-            description: "The user's email address.",
+            valueType: "string",
           },
         ],
       },

@@ -1,1 +1,1 @@
-export * from "./command-action";
+export * from "./command-action.generator";

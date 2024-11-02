@@ -1,18 +1,25 @@
-import { ContextBuilder } from "../../shared";
-import { generateDomainEventSubscriber } from "../domain-event-subscriber";
+import { ContextBuilder, GenerateContext } from "../../shared";
+import { DomainEventSubscriberTemplate } from "../domain-event-subscriber.template";
 
 describe("DomainEventSubscriber", () => {
-    it("should generate domain event subscriber", () => {
-        // Arrange
-        const options = {
-        eventName: "UserCreatedEvent",
-        };
-        const context = ContextBuilder.build("@src");
-    
-        // Act
-        const output = generateDomainEventSubscriber(options, context);
-    
-        // Assert
-        expect(output).toMatchSnapshot();
-    });
+  let context: GenerateContext;;
+  let template: DomainEventSubscriberTemplate;
+
+  beforeEach(() => {
+    context = ContextBuilder.build("@src");
+    template = new DomainEventSubscriberTemplate();
+  });
+  
+  it("should generate domain event subscriber", () => {
+    // Arrange
+    const options = {
+      eventName: "UserCreatedEvent",
+    };
+
+    // Act
+    const output = template.generate(options, context);
+
+    // Assert
+    expect(output).toMatchSnapshot();
+  });
 });

@@ -2,8 +2,8 @@
 
 exports[`CommandHandler Should render the command handler template 1`] = `
 "import { QueryHandler } from "@typescript-ddd/core";
-import { UserView } from "@src/domain";
 import { FindAllUserQuery, UserFinder } from "@src/application";
+import { UserView } from "@src/domain";
 
 /** Represents a find all user handler. */
 export class FindAllUserHandler implements QueryHandler<FindAllUserQuery> {

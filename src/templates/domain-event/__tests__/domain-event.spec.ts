@@ -1,16 +1,18 @@
 import { ContextBuilder, GenerateContext } from "../../shared";
-import { generateDomainEvent } from "../domain-event";
+import { DomainEventTemplate } from "../domain-event.template";
 
 describe("DomainEvent", () => {
   let context: GenerateContext;
-
+  let template: DomainEventTemplate;
+  
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new DomainEventTemplate();
   });
 
   it("Should render template", () => {
-    const output = generateDomainEvent(
-      { entityName: "User", eventAction: "Created" },
+    const output = template.generate(
+      { entityName: "User", eventAction: "Created", eventId: "user/created" },
       context
     );
     expect(output).toMatchSnapshot();

@@ -2,7 +2,7 @@
 
 exports[`Entity Should render the entity component 1`] = `
 "import { Entity, EntityCreateProps, EntityUpdateProps  } from "@typescript-ddd/core";
-import { InvoiceId, OrderId } from "@src/domain/models";
+import { OrderId, InvoiceId } from "@src/domain";
 
 /**
  * Represents the properties required to create a invoice.
@@ -56,7 +56,7 @@ export class Invoice extends Entity<InvoiceId> {
 
 exports[`Entity Should render the trackable entity component 1`] = `
 "import { TrackableEntity, EntityCreateProps, EntityUpdateProps, UtcDate } from "@typescript-ddd/core";
-import { InvoiceId, OrderId } from "@src/domain/models";
+import { InvoiceId } from "@src/domain";
 
 /**
  * Represents the properties required to create a invoice.

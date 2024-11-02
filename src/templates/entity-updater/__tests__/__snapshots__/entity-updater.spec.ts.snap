@@ -2,8 +2,8 @@
 
 exports[`EntityUpdater Should render the entity updater template 1`] = `
 "import { DomainEventBus } from "@typescript-ddd/core";
-import { User, UpdateUserProps, UserRepository } from "@src/domain";
 import { UserFinder } from "@src/application";
+import { User, UpdateUserProps, UserRepository } from "@src/domain";
 
 /** Represents a user updater. */
 export class UserUpdater {

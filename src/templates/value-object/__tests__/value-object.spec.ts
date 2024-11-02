@@ -1,16 +1,17 @@
 import { GenerateContext, ContextBuilder } from "../../shared";
-import { generateValueObject } from "../value-object";
+import { ValueObjectTemplate } from "../value-object.template";
 
 describe("ValueObject", () => {
   let context: GenerateContext;
+  let template: ValueObjectTemplate;
 
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new ValueObjectTemplate();
   });
 
   it("Should render the value object component", () => {
-        
-    const output = generateValueObject(
+    const output = template.generate(
       { name: "FirstName", valueType: "string" },
       context
     );
@@ -19,8 +20,13 @@ describe("ValueObject", () => {
   });
 
   it("Should render the value object component with properties", () => {
-    const output = generateValueObject(
-      { name: "Phone", valueType: "PhoneProps", valueProps: [{ name: "number", type: "string" }], generateValueGetters: true },
+    const output = template.generate(
+      {
+        name: "Phone",
+        valueType: "PhoneProps",
+        valueProps: [{ name: "number", valueType: "string" }],
+        generateValueGetters: true,
+      },
       context
     );
 

@@ -1,1 +1,1 @@
-export * from "./entity-finder";
+export * from "./entity-finder.generator";

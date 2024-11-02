@@ -1,7 +1,6 @@
 import { GenerateContext, ContextImportDeclaration } from "./generate-context";
 import { arrays } from "../../utils";
-import { Project, SourceFile } from "ts-morph";
-import { unescape } from "querystring";
+import { SourceFile } from "ts-morph";
 
 export class ContextBuilder implements GenerateContext {
   private _fileName: string;
@@ -84,19 +83,29 @@ export class ContextBuilder implements GenerateContext {
     }
 
     // Non core and root imports
-    for (const moduleSpecifier of moduleSpecifiers.filter(
+    for (const moduleSpecifier of moduleSpecifiers
+      .filter(
         (x) => x !== "@typescript-ddd/core" && !x.startsWith(this.rootDir)
-    )) {
-        sourceFile.addImportDeclaration({
-            moduleSpecifier,
-            namedImports: this.getNamedImports(moduleSpecifier),
-        });
+      )
+      .sort((a, b) => {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+      })) {
+      sourceFile.addImportDeclaration({
+        moduleSpecifier,
+        namedImports: this.getNamedImports(moduleSpecifier),
+      });
     }
 
     // Root imports
-    for (const moduleSpecifier of moduleSpecifiers.filter(
-      (x) => x.startsWith(this.rootDir)
-    )) {
+    for (const moduleSpecifier of moduleSpecifiers
+      .filter((x) => x.startsWith(this.rootDir))
+      .sort((a, b) => {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+      })) {
       sourceFile.addImportDeclaration({
         moduleSpecifier,
         namedImports: this.getNamedImports(moduleSpecifier),
@@ -113,7 +122,7 @@ export class ContextBuilder implements GenerateContext {
     tokens.forEach((token) => {
       output = output.replace(`{{${token.name}}}`, "${" + token.name + "}");
     });
-    return "\`" +  output + "\`";
+    return "`" + output + "`";
   }
 
   get fileName(): string {

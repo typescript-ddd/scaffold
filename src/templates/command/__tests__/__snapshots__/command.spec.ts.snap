@@ -7,8 +7,8 @@ exports[`Command Should render the command template 1`] = `
 export class CreateUserCommand implements Command {
     /**
      * Initializes a new instance of a create user command.
-     * @param {string} name - The user's name.
-     * @param {string} email - The user's email address.
+     * @param {string} name - The name.
+     * @param {string} email - The email.
      */
     constructor(public readonly name: string, public readonly email: string) {
         // TODO: Add validation

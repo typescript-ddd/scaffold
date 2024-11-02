@@ -1,15 +1,17 @@
 import { GenerateContext, ContextBuilder } from "../../shared";
-import { generateEntityUpdater } from "../entity-updater";
+import { EntityUpdaterTemplate } from "../entity-updater.template";
 
 describe("EntityUpdater", () => {
   let context: GenerateContext;
+  let template: EntityUpdaterTemplate;
 
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new EntityUpdaterTemplate();
   });
 
   it("Should render the entity updater template", () => {
-    const output = generateEntityUpdater(
+    const output = template.generate(
       {
         entityName: "User",
       },

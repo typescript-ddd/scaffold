@@ -17,5 +17,4 @@ export * from "./query";
 export * from "./query-action";
 export * from "./query-handler";
 export * from "./value-object";
-
-export { ContextBuilder, GenerateContext } from "./shared";
+export * from "./shared";

@@ -2,8 +2,8 @@
 
 exports[`CommandHandler Should render the command handler template 1`] = `
 "import { CommandHandler } from "@typescript-ddd/core";
-import { UserView } from "@src/domain/view";
 import { CreateUserCommand, UserCreator } from "@src/application/create";
+import { UserView } from "@src/domain/view";
 
 /** Represents a create user handler. */
 export class CreateUserHandler implements CommandHandler<CreateUserCommand> {

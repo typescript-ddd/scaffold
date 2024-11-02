@@ -1,11 +1,13 @@
 import { ContextBuilder, GenerateContext } from "../../shared";
-import { generateCommandHandler } from "../command-handler";
+import { CommandHandlerTemplate } from "../command-handler.template";
 
 describe("CommandHandler", () => {
     let context: GenerateContext;
+    let template: CommandHandlerTemplate;
 
     beforeEach(() => {
         context = ContextBuilder.build("@src");
+        template = new CommandHandlerTemplate();
     })
 
     it("Should render the command handler template", () => {
@@ -15,7 +17,7 @@ describe("CommandHandler", () => {
             namedImports: ["UserView"],
         });
 
-        const output = generateCommandHandler(
+        const output = template.generate(
             {
                 entityName: "User",
                 actionName: "create",
@@ -23,7 +25,7 @@ describe("CommandHandler", () => {
                 returnType: "UserView",
                 returnsView: true,
                 commandProperties: [
-                    { name: "name", type: "string" },
+                    { name: "name", valueType: "string" },
                 ]
             },
             context

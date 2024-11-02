@@ -1,15 +1,17 @@
 import { GenerateContext, ContextBuilder } from "../../shared";
-import { generateEntityDeleter } from "../entity-deleter";
+import { EntityDeleterTemplate } from "../entity-deleter.template";
 
 describe("EntityDeleter", () => {
   let context: GenerateContext;
+  let template: EntityDeleterTemplate;
 
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new EntityDeleterTemplate();
   });
 
   it("Should render the entity deleter template", () => {
-    const output = generateEntityDeleter(
+    const output = template.generate(
       {
         entityName: "User",
       },

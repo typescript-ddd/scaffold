@@ -8,7 +8,7 @@ import { UserId } from "@src/domain";
 export class FindUserQuery implements Query {
     /**
      * Initializes a new instance of a find user query.
-     * @param {UserId} id - The user's id.
+     * @param {UserId} id - The id.
      */
     constructor(public readonly id: UserId) {
         // TODO: Add validation

@@ -1,15 +1,17 @@
 import { ContextBuilder, GenerateContext } from "../../shared";
-import { generateEntityRepositoryInterface } from "../entity-repository-interface";
+import { EntityRepositoryInterfaceTemplate } from "../entity-repository-interface.template";
 
 describe("EntityRepositoryInterface", () => {
     let context: GenerateContext;
+    let template: EntityRepositoryInterfaceTemplate;
     
     beforeEach(() => {
         context = ContextBuilder.build("@src");
+        template = new EntityRepositoryInterfaceTemplate();
     });
     
     it("Should render template", () => {
-        const output = generateEntityRepositoryInterface(
+        const output = template.generate(
         { entityName: "User" },
         context
         );

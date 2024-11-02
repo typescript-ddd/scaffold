@@ -1,17 +1,25 @@
-import { ContextBuilder } from "../../shared";
-import { generateDomainError } from "../domain-error";
+import { ContextBuilder, GenerateContext } from "../../shared";
+import { DomainErrorTemplate } from "../domain-error.template";
 
 describe("DomainError", () => {
+  let context: GenerateContext;
+  let template: DomainErrorTemplate;
+
+  beforeEach(() => {
+    context = ContextBuilder.build("@src");
+    template = new DomainErrorTemplate();
+  });
+
   it("should generate domain error", () => {
     // Arrange
     const options = {
       name: "UserLockedOut",
       message: "User is locked out.",
+      parameters: []      
     };
-    const context = ContextBuilder.build("@src");
 
     // Act
-    const output = generateDomainError(options, context);
+    const output = template.generate(options, context);
 
     // Assert
     expect(output).toMatchSnapshot();
@@ -23,7 +31,7 @@ describe("DomainError", () => {
       name: "UserAlreadyExists",
       message: "User for {{id}} already exists.",
       parameters: [
-        { name: "id", type: "UserId"}
+        { name: "id", valueType: "UserId"}
       ]
     };
     const context = ContextBuilder.build("@src");
@@ -33,7 +41,7 @@ describe("DomainError", () => {
     })
 
     // Act
-    const output = generateDomainError(options, context);
+    const output = template.generate(options, context);
 
     // Assert
     expect(output).toMatchSnapshot();

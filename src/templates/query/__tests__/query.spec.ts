@@ -1,11 +1,13 @@
 import { ContextBuilder, GenerateContext } from "../../shared";
-import { generateQuery } from "../query";
+import { QueryTemplate } from "../query.template";
 
 describe("query", () => {
   let context: GenerateContext;
+  let template: QueryTemplate;
 
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new QueryTemplate();
   });
 
   it("Should render the query template", () => {
@@ -14,11 +16,12 @@ describe("query", () => {
       namedImports: ["UserId"],
     });
 
-    const output = generateQuery(
+    const output = template.generate(
       {
         entityName: "User",
+        actionName: "find",
         properties: [
-          { name: "id", type: "UserId", description: "The user's id." },
+          { name: "id", valueType: "UserId" },
         ],
       },
       context

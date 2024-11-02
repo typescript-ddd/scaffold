@@ -1,20 +1,22 @@
 import { GenerateContext, ContextBuilder } from "../../shared";
-import { generateEntityView } from "../entity-view";
+import { EntityViewTemplate } from "../entity-view.template";
 
 describe("EntityView", () => {
   let context: GenerateContext;
+  let template: EntityViewTemplate;
 
   beforeEach(() => {
     context = ContextBuilder.build("@src");
+    template = new EntityViewTemplate();
   });
 
   it("Should render the entity view template", () => {
-    const output = generateEntityView(
+    const output = template.generate(
       {
         entityName: "User",
         properties: [
-          { name: "id", type: "string", prop: "value" },
-          { name: "name", type: "string" },
+          { name: "id", valueType: "string", prop: "value" },
+          { name: "name", valueType: "string" },
         ],
       },
       context
