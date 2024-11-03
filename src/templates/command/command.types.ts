@@ -1,13 +1,13 @@
 import {
   TemplatePropertiesOption,
-  TemplatePropertyOption,
+  TemplatePropertyValue,
   TemplateStringOption,
 } from "../shared/template";
 
 export type CommandTemplateValues = {
   entityName: string;
   actionName: string;
-  properties: TemplatePropertyOption[];
+  properties: TemplatePropertyValue[];
 };
 export type CommandTemplateOptions = {
   entityName: TemplateStringOption;

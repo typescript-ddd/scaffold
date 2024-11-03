@@ -7,7 +7,7 @@ export class ContextBuilder implements GenerateContext {
   private _importDeclarations: ContextImportDeclaration[] = [];
 
   private constructor(
-    private rootDir: string = "@/src",
+    public readonly rootDir: string = "@/src",
     fileName: string = "example.ts"
   ) {
     this._fileName = fileName;
