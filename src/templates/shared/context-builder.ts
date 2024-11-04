@@ -153,6 +153,10 @@ export class ContextBuilder implements GenerateContext {
     return this._currentFile;
   }
 
+  set currentFile(value: { fileName: string; projectPath: string[] } | undefined) {
+    this._currentFile = value;
+  }
+
   static build(rootDir: string): ContextBuilder {
     return new ContextBuilder(rootDir);
   }

@@ -1,6 +1,6 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 
 export type GenerateTemplateOptions = {
   name: string;
@@ -8,14 +8,16 @@ export type GenerateTemplateOptions = {
 
 export const generateTemplate = (
   options: GenerateTemplateOptions,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { name } = options;
   const className = strings.capitalize(name);
+  const { fileName = "example", projectPath = [] } = context.currentFile || {};
 
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${className} {}    
 `
@@ -45,7 +47,11 @@ export class ${className} {}
     tags: [{ tagName: "param", text: "value The value of the identifier." }],
   });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "Template",
+    content: sourceFile.getFullText(),
+    fileName,
+    projectPath,
+    values: options,
+  };
 };
