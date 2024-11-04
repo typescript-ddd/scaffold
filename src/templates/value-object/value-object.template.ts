@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateValueObject } from "./value-object.generator";
 import {
@@ -50,7 +50,7 @@ export class ValueObjectTemplate
     generateValueGetters: true,
     validationErrorMessage: "Invalid phone number",
   };
-  generate(values: ValueObjectTemplateValues, context: GenerateContext): string {
+  generate(values: ValueObjectTemplateValues, context: GenerateContext): Chunk {
     return generateValueObject(values, context);
   }
 }

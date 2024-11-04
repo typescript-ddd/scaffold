@@ -1,14 +1,10 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateQuery } from "./query.generator";
-import {
-  QueryTemplateOptions,
-  QueryTemplateValues,
-} from "./query.types";
+import { QueryTemplateOptions, QueryTemplateValues } from "./query.types";
 
 export class QueryTemplate
-  implements
-    Template<QueryTemplateValues, QueryTemplateOptions>
+  implements Template<QueryTemplateValues, QueryTemplateOptions>
 {
   readonly name = "Query";
   readonly description = "Generates a query";
@@ -20,24 +16,28 @@ export class QueryTemplate
       optionType: "string",
     },
     actionName: {
-        name: "actionName",
-        label: "Action Name",
-        description: "The name of the action",
-        optionType: "string",
+      name: "actionName",
+      label: "Action Name",
+      description: "The name of the action",
+      optionType: "string",
     },
     properties: {
-        name: "properties",
-        label: "Properties",
-        description: "The properties of the entity",
-        optionType: "properties",
-    }
+      name: "properties",
+      label: "Properties",
+      description: "The properties of the entity",
+      optionType: "properties",
+    },
   };
   readonly defaultValues = {
     entityName: "User",
     actionName: "find",
     properties: [],
   };
-  generate(values: QueryTemplateValues, context: GenerateContext): string {
-    return generateQuery(values, context);
+  generate(
+    values: QueryTemplateValues,
+    context: GenerateContext,
+    chunkName?: string
+  ): Chunk {
+    return generateQuery(values, context, chunkName);
   }
 }

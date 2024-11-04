@@ -1,20 +1,24 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { QueryTemplateValues } from "./query.types";
 
 export const generateQuery = (
   values: QueryTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName, actionName = "Find", properties } = values;
   const queryName = `${strings.capitalize(actionName)}${strings.capitalize(
     entityName
   )}Query`;
-
+  const {
+    fileName = `${strings.kebab("find", entityName, "query")}.ts`,
+    projectPath = [],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${queryName} implements Query {}    
 `
@@ -54,7 +58,11 @@ export class ${queryName} implements Query {}
     })),
   });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "Query",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

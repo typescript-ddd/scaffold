@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateCommandAction } from "./command-action.generator";
 import {
@@ -58,7 +58,7 @@ export class CommandActionTemplate
     responseType: "CreateUserResponse",
     contextType: "UserContext",
   };
-  generate(values: CommandActionTemplateValues, context: GenerateContext): string {
-    return generateCommandAction(values, context);
+  generate(values: CommandActionTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateCommandAction(values, context, chunkName);
   }
 }

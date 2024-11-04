@@ -1,20 +1,24 @@
 import { Project } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { CommandActionTemplateValues } from "./command-action.types";
 
 export const generateCommandAction = (
   values: Partial<CommandActionTemplateValues>,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { subject, method, path, requestType, responseType, contextType } =
     values;
   const methodType = strings.capitalize(strings.lower(method));
   const className = `${methodType}${strings.capitalize(subject)}Action`;
-
+  const {
+    fileName = `${strings.kebab(method, subject, "action")}.ts`,
+    projectPath = ["presentation", "controller", strings.lower(method)],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${className} extends CommandAction {}    
 `
@@ -95,7 +99,11 @@ export class ${className} extends CommandAction {}
     ],
   });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || `${methodType}EntityCommandAction`,
+    content: sourceFile.getFullText(),
+    fileName,
+    projectPath,
+    values,
+  };
 };

@@ -11,13 +11,15 @@ describe("EntityCreator", () => {
   });
 
   it("Should render the entity creator template", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
       },
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("EntityCreator");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

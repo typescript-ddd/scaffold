@@ -17,7 +17,7 @@ describe("Aggregate", () => {
       namedImports: ["Phone"],
     });
 
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
         properties: [{ name: "name", valueType: "string" }, { name: "phone", valueType: "Phone"}],
@@ -26,11 +26,13 @@ describe("Aggregate", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("AggregateRoot");
+    expect(chunk.content).toMatchSnapshot();
   });
 
   it("Should render the trackable aggregate root component", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
         properties: [{ name: "name", valueType: "string" }],
@@ -39,6 +41,8 @@ describe("Aggregate", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("AggregateRoot");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

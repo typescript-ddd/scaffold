@@ -1,25 +1,23 @@
 import { Project } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { QueryActionTemplateValues } from "./query-action.types";
 
 export const generateQueryAction = (
   values: QueryActionTemplateValues,
-  context: GenerateContext
-) => {
-  const {
-    subject,
-    path,
-    requestType,
-    responseType,
-    contextType,
-  } = values;
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
+  const { subject, path, requestType, responseType, contextType } = values;
   const methodType = "Get";
   const className = `${methodType}${strings.capitalize(subject)}Action`;
-
+  const {
+    fileName = `${strings.kebab("get", subject, "action")}.ts`,
+    projectPath = ["presentation", "get"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${className} extends QueryAction {}    
 `
@@ -47,15 +45,13 @@ export class ${className} extends QueryAction {}
     description: `Initializes a new instance of ${strings.describe(
       className
     )}.`,
-    tags: [
-      { tagName: "param", text: `{QueryBus} queryBus - The query bus.` },
-    ],
+    tags: [{ tagName: "param", text: `{QueryBus} queryBus - The query bus.` }],
   });
 
   classDeclaration.addProperty({
     name: "method",
     type: "string",
-    initializer: "\"GET\"",
+    initializer: '"GET"',
     isReadonly: true,
   });
 
@@ -100,7 +96,11 @@ export class ${className} extends QueryAction {}
     ],
   });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || `QueryAction`,
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

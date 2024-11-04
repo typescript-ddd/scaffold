@@ -1,19 +1,23 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { EntityViewTemplateValues } from "./entity-view.types";
 
 export const generateEntityView = (
   values: EntityViewTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName, properties = [] } = values;
   const entityType = strings.capitalize(entityName);
   const viewType = `${entityType}View`;
-
+  const {
+    fileName = `${strings.kebab(entityName, "view")}.ts`,
+    projectPath = ["domain", "view"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${viewType} {}    
 `
@@ -69,7 +73,7 @@ export class ${viewType} {}
       .addJsDoc({
         description: `The ${strings.natural(
           property.name
-        )} of the ${strings.natural(entityName)}.`,        
+        )} of the ${strings.natural(entityName)}.`,
       });
   });
 
@@ -101,7 +105,11 @@ export class ${viewType} {}
       );
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "EntityView",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

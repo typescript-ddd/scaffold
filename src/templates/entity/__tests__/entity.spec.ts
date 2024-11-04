@@ -15,7 +15,7 @@ describe("Entity", () => {
   });
 
   it("Should render the entity component", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "Invoice",
         properties: [{ name: "orderId", valueType: "OrderId" }],
@@ -24,12 +24,14 @@ describe("Entity", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("Entity");
+    expect(chunk.content).toMatchSnapshot();
   });
 
   it("Should render the trackable entity component", () => {
     const context = ContextBuilder.build("@src");
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "Invoice",
         properties: [{ name: "orderId", valueType: "OrderId" }],
@@ -38,6 +40,8 @@ describe("Entity", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("Entity");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

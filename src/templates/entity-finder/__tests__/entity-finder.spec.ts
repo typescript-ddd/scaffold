@@ -11,13 +11,15 @@ describe("EntityFinder", () => {
   });
 
   it("Should render the entity finder template", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
       },
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("EntityFinder");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateCommandHandler } from "./command-handler.generator";
 import {
@@ -59,7 +59,7 @@ export class CommandHandlerTemplate
     commandProperties: [{ name: "name", valueType: "string" }],
     returnsView: true,
   };
-  generate(values: CommandHandlerTemplateValues, context: GenerateContext): string {
-    return generateCommandHandler(values, context);
+  generate(values: CommandHandlerTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateCommandHandler(values, context, chunkName);
   }
 }

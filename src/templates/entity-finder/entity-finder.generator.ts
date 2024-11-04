@@ -1,21 +1,25 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { EntityFinderTemplateValues } from "./entity-finder.types";
 
 export const generateEntityFinder = (
   values: EntityFinderTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName } = values;
   const entityFinderType = `${strings.capitalize(entityName)}Finder`;
   const repositoryType = `${strings.capitalize(entityName)}Repository`;
   const entityType = strings.capitalize(entityName);
   const entityIdType = `${entityType}Id`;
-
+  const {
+    fileName = `${strings.kebab(entityName, "finder")}.ts`,
+    projectPath = ["application", "find"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${entityFinderType} {}    
 `
@@ -142,12 +146,18 @@ export class ${entityFinderType} {}
         },
         {
           tagName: "returns",
-          text: `{Promise<${entityType}[]>} The ${strings.plural(strings.natural(entityName))} matching the criteria.`,
+          text: `{Promise<${entityType}[]>} The ${strings.plural(
+            strings.natural(entityName)
+          )} matching the criteria.`,
         },
       ],
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "EntityFinder",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

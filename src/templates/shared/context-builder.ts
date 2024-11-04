@@ -1,16 +1,21 @@
-import { GenerateContext, ContextImportDeclaration } from "./generate-context";
+import {
+  GenerateContext,
+  ContextImportDeclaration,
+  Chunk,
+} from "./generate-context";
 import { arrays } from "../../utils";
 import { SourceFile } from "ts-morph";
 
 export class ContextBuilder implements GenerateContext {
-  private _fileName: string;
+  private _currentFile?: { fileName: string; projectPath: string[] };
   private _importDeclarations: ContextImportDeclaration[] = [];
+  private _chunks: Chunk[] = [];
 
   private constructor(
     public readonly rootDir: string = "@/src",
-    fileName: string = "example.ts"
+    currentFile?: { fileName: string; projectPath: string[] }
   ) {
-    this._fileName = fileName;
+    this._currentFile = currentFile;
   }
 
   resolveDir(
@@ -125,8 +130,27 @@ export class ContextBuilder implements GenerateContext {
     return "`" + output + "`";
   }
 
-  get fileName(): string {
-    return this._fileName;
+  addChunk(chunk: Chunk): void {
+    this._chunks.push(chunk);
+    this._currentFile = undefined;
+  }
+
+  getChunks(): Chunk[] {
+    return this._chunks;
+  }
+
+  getChunk(name: string): Chunk | undefined {
+    return this._chunks.find((x) => x.name === name);
+  }
+
+  flushChunks(): Chunk[] {
+    const chunks = this._chunks;
+    this._chunks = [];
+    return chunks;
+  }
+
+  get currentFile(): { fileName: string; projectPath: string[] } | undefined {
+    return this._currentFile;
   }
 
   static build(rootDir: string): ContextBuilder {

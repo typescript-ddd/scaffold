@@ -11,13 +11,15 @@ describe("EntityDeleter", () => {
   });
 
   it("Should render the entity deleter template", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
       },
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("EntityDeleter");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

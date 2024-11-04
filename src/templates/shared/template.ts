@@ -1,4 +1,4 @@
-import { GenerateContext } from "./generate-context";
+import { Chunk, GenerateContext } from "./generate-context";
 
 export type TemplateEnum = Record<string, string>;
 export type TemplatePropertyValueType =
@@ -90,5 +90,5 @@ export interface Template<
   description: string;
   options: TOptions;
   defaultValues: TValues;
-  generate(values: TValues, context: GenerateContext): string;
+  generate(values: TValues, context: GenerateContext, chunkName?: string): Chunk;
 }

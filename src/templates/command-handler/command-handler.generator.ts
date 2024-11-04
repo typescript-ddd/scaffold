@@ -1,6 +1,6 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { CommandHandlerTemplateValues } from "./command-handler.types";
 
 const actorMap: Record<string, string> = {
@@ -11,8 +11,9 @@ const actorMap: Record<string, string> = {
 
 export const generateCommandHandler = (
   values: CommandHandlerTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const {
     entityName,
     actionName,
@@ -26,12 +27,14 @@ export const generateCommandHandler = (
   const actorType = strings.capitalize(actor);
   const commandType = `${actionType}${entityType}Command`;
   const actorName = strings.lower(actorMap[actionName]);
-
   const className = `${actionType}${entityType}Handler`;
-
+  const {
+    fileName = `${strings.kebab(actionType, entityType, "command-handler")}.ts`,
+    projectPath = ["application", strings.lower(actionName)],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${className} implements CommandHandler<${commandType}> {}    
 `
@@ -132,7 +135,11 @@ export class ${className} implements CommandHandler<${commandType}> {}
       ],
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || `${actionType}EntityCommandHandler`,
+    content: sourceFile.getFullText(),
+    fileName,
+    projectPath,
+    values,
+  };
 };

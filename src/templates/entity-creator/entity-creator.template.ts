@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityCreator } from "./entity-creator.generator";
 import {
@@ -23,7 +23,11 @@ export class EntityCreatorTemplate
   readonly defaultValues = {
     entityName: "User",
   };
-  generate(values: EntityCreatorTemplateValues, context: GenerateContext): string {
-    return generateEntityCreator(values, context);
+  generate(
+    values: EntityCreatorTemplateValues,
+    context: GenerateContext,
+    chunkName?: string
+  ): Chunk {
+    return generateEntityCreator(values, context, chunkName);
   }
 }

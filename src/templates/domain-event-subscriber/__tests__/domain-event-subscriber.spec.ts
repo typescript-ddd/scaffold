@@ -17,9 +17,11 @@ describe("DomainEventSubscriber", () => {
     };
 
     // Act
-    const output = template.generate(options, context);
+    const chunk = template.generate(options, context);
 
     // Assert
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("DomainEventSubscriber");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

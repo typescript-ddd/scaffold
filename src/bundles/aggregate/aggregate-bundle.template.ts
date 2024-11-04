@@ -1,5 +1,4 @@
-import { GenerateContext } from "../../templates/shared";
-import { Template } from "../../templates/shared/template";
+import { Bundle, Chunk, GenerateContext } from "../../templates/shared";
 import { generateAggregateBundle } from "./aggregate-bundle.generator";
 import {
   AggregateBundleTemplateValues,
@@ -8,7 +7,7 @@ import {
 
 export class AggregateBundleTemplate
   implements
-    Template<AggregateBundleTemplateValues, AggregateBundleTemplateOptions>
+    Bundle<AggregateBundleTemplateValues, AggregateBundleTemplateOptions>
 {
   readonly name = "Aggregate Root Bundle";
   readonly description = "Generates an aggregate root bundle";
@@ -40,8 +39,7 @@ export class AggregateBundleTemplate
   generate(
     values: AggregateBundleTemplateValues,
     context: GenerateContext
-  ): string {
-    const templates = generateAggregateBundle(values, context.rootDir);
-    return Object.values(templates).join("\n");
+  ): Chunk[] {
+    return generateAggregateBundle(values, context);
   }
 }

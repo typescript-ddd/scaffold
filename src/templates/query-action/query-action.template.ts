@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateQueryAction } from "./query-action.generator";
 import {
@@ -50,7 +50,7 @@ export class QueryActionTemplate
     responseType: null,
     contextType: null,
   };
-  generate(values: QueryActionTemplateValues, context: GenerateContext): string {
-    return generateQueryAction(values, context);
+  generate(values: QueryActionTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateQueryAction(values, context, chunkName);
   }
 }

@@ -23,9 +23,11 @@ describe("CommandAction", () => {
         };
 
         // Act
-        const output = template.generate(options, context);
+        const chunk = template.generate(options, context);
 
         // Assert
-        expect(output).toMatchSnapshot();
+        expect(chunk).toBeDefined();
+        expect(chunk.name).toBe("GetEntityCommandAction");
+        expect(chunk.content).toMatchSnapshot();
     }); 
 })

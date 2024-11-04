@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityDeleter } from "./entity-deleter.generator";
 import {
@@ -23,7 +23,7 @@ export class EntityDeleterTemplate
   readonly defaultValues = {
     entityName: "User",
   };
-  generate(values: EntityDeleterTemplateValues, context: GenerateContext): string {
-    return generateEntityDeleter(values, context);
+  generate(values: EntityDeleterTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateEntityDeleter(values, context, chunkName);
   }
 }

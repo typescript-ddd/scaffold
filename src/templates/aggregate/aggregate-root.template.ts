@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateAggregateRoot } from "./aggregate-root.generator";
 import {
@@ -39,8 +39,9 @@ export class AggregateRootTemplate
   };
   generate(
     values: AggregateRootTemplateValues,
-    context: GenerateContext
-  ): string {
-    return generateAggregateRoot(values, context);
+    context: GenerateContext,
+    chunkName?: string
+  ): Chunk {
+    return generateAggregateRoot(values, context, chunkName);
   }
 }

@@ -1,22 +1,26 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { EntityUpdaterTemplateValues } from "./entity-updater.types";
 
 export const generateEntityUpdater = (
   values: EntityUpdaterTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName } = values;
   const entityUpdaterType = `${strings.capitalize(entityName)}Updater`;
   const repositoryType = `${strings.capitalize(entityName)}Repository`;
   const entityType = strings.capitalize(entityName);
   const updatePropsType = `Update${entityType}Props`;
   const finderType = `${strings.capitalize(entityName)}Finder`;
-
+  const {
+    fileName = `${strings.kebab(entityName, "updater")}.ts`,
+    projectPath = ["application", "update"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${entityUpdaterType} {}    
 `
@@ -74,7 +78,9 @@ export class ${entityUpdaterType} {}
     tags: [
       {
         tagName: "param",
-        text: `{${finderType}} finder - The ${strings.natural(entityName)} finder.`,
+        text: `{${finderType}} finder - The ${strings.natural(
+          entityName
+        )} finder.`,
       },
       {
         tagName: "param",
@@ -103,10 +109,12 @@ export class ${entityUpdaterType} {}
       isAsync: true,
     })
     .setBodyText((writer) => {
-      writer.writeLine(`const ${strings.lower(entityName)} = await this.finder.findById(props.id);`);
       writer.writeLine(
-        `${strings.lower(entityName)}.update(props);`
+        `const ${strings.lower(
+          entityName
+        )} = await this.finder.findById(props.id);`
       );
+      writer.writeLine(`${strings.lower(entityName)}.update(props);`);
       writer.writeLine(
         `await this.repository.save(${strings.lower(entityName)});`
       );
@@ -134,7 +142,11 @@ export class ${entityUpdaterType} {}
       ],
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "EntityUpdater",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

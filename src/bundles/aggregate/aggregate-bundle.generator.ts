@@ -1,5 +1,4 @@
 import {
-  ContextBuilder,
   generateEntityId,
   generateAggregateRoot,
   generateCommand,
@@ -14,171 +13,221 @@ import {
   generateEntityView,
   generateCommandAction,
   generateQueryAction,
+  GenerateContext,
+  Chunk,
+  generateEntityDeleter,
 } from "../../templates";
 import { AggregateBundleTemplateValues } from "./aggregate-bundle.types";
 import * as strings from "../../utils/string-helpers";
 
-export const generateAggregateBundle = (values: AggregateBundleTemplateValues, rootPath: string) => {
+export const generateAggregateBundle = (
+  values: AggregateBundleTemplateValues,
+  context: GenerateContext
+): Chunk[] => {
   const { entityName, properties = [], trackable } = values;
   const { capitalize, lower, plural } = strings;
-
-  const context = ContextBuilder.build(rootPath);
 
   const entityClass = capitalize(entityName);
   const entityIdClass = `${entityClass}Id`;
   const entityPath = lower(plural(entityClass));
 
-  const entityId = generateEntityId(
-    {
-      entityName: values.entityName,
-    },
-    context
+  context.addChunk(
+    generateEntityId(
+      {
+        entityName: values.entityName,
+      },
+      context
+    )
   );
 
-  const aggregateRoot = generateAggregateRoot(
-    {
-      entityName: entityClass,
-      properties: properties,
-      trackable: trackable,
-    },
-    context
+  context.addChunk(
+    generateAggregateRoot(
+      {
+        entityName: entityClass,
+        properties: properties,
+        trackable: trackable,
+      },
+      context
+    )
   );
 
-  const view = generateEntityView({
-    entityName: entityClass,
-    properties: properties,
-  }, context);
+  context.addChunk(
+    generateEntityView(
+      {
+        entityName: entityClass,
+        properties: properties,
+      },
+      context
+    )
+  );
 
   context.addImportDeclaration({
     moduleSpecifier: context.resolveDir("domain"),
-    namedImports: [entityIdClass]
+    namedImports: [entityIdClass],
   });
 
-  const [createCommand, updateCommand, deleteCommand] = [
-    "create",
-    "update",
-    "delete",
-  ].map((action) => {
-    return generateCommand(
-      {
-        entityName: values.entityName,
-        actionName: action,
-        properties: [
-          ...(action === "create" || action === "update" ? properties : []),
-          ...(action === "delete"
-            ? [{ name: "id", valueType: entityIdClass }]
-            : []),
-        ],
-      },
-      context
+  ["create", "update", "delete"].map((action) => {
+    context.addChunk(
+      generateCommand(
+        {
+          entityName: values.entityName,
+          actionName: action,
+          properties: [
+            ...(action === "create" || action === "update" ? properties : []),
+            ...(action === "delete"
+              ? [{ name: "id", valueType: entityIdClass }]
+              : []),
+          ],
+        },
+        context
+      )
     );
   });
 
-  const findQuery = generateQuery({
-    entityName: values.entityName,
-    actionName: "find",
-    properties: [{ name: "id", valueType: entityIdClass }],
-  }, context);
+  context.addChunk(
+    generateQuery(
+      {
+        entityName: values.entityName,
+        actionName: "find",
+        properties: [{ name: "id", valueType: entityIdClass }],
+      },
+      context
+    )
+  );
 
-  const [createCommandHandler, updateCommandHandler, deleteCommandHandler] = ["create|Creator", "update|Updater", "delete|Deleter"].map((action) => {
+  ["create|Creator", "update|Updater", "delete|Deleter"].map((action) => {
     const [act, actor] = action.split("|");
-    return generateCommandHandler({
-      entityName: entityClass,
-      actionName: act,
-      actor: `${entityClass}${actor}`,
-      returnType: ["create", "update"].includes(act) ? `${entityClass}View` : "void",
-      returnsView: ["create", "update"].includes(act),
-      commandProperties: ["create", "update"].includes(act) ? properties : [{ name: "id", valueType: entityIdClass, prop: "fromValue" }],
-    }, context)
+    context.addChunk(
+      generateCommandHandler(
+        {
+          entityName: entityClass,
+          actionName: act,
+          actor: `${entityClass}${actor}`,
+          returnType: ["create", "update"].includes(act)
+            ? `${entityClass}View`
+            : "void",
+          returnsView: ["create", "update"].includes(act),
+          commandProperties: ["create", "update"].includes(act)
+            ? properties
+            : [{ name: "id", valueType: entityIdClass, prop: "fromValue" }],
+        },
+        context
+      )
+    );
   });
 
-  const [createdEvent, updatedEvent, deletedEvent] = ["created", "updated", "deleted"].map((action) => {
-    return generateDomainEvent({
-      entityName: entityClass,
-      eventAction: action,
-      eventId: `${lower(entityClass)}/${action}`,
-    }, context);
-  })
-
-  const findQueryHandler = generateQueryHandler({
-    entityName: entityClass,
-    actionName: "find",
-    actor: `${entityClass}Finder`,
-    returnType: `${entityClass}View`,
-    returnsView: true,
-    queryProperties: [{ name: "id", valueType: entityIdClass, prop: "fromValue" }],
-  }, context);
-
-  const repository = generateEntityRepositoryInterface({
-    entityName: entityClass,    
-  }, context);
-
-  const creator = generateEntityCreator({
-    entityName: entityClass,    
-  }, context);
-
-  const finder = generateEntityFinder({
-    entityName: entityClass,
-  }, context);
-
-  const updater = generateEntityUpdater({
-    entityName: entityClass,
-  }, context);
-
-  const deleter = generateEntityUpdater({
-    entityName: entityClass,
-  }, context);
-
-  
-
-  const [deleteAction, postAction, putAction] = ["delete", "post", "put"].map((action) => {
-    return generateCommandAction({
-      method: action.toUpperCase(),
-      path: action === "post" ? `/${entityPath}` : `/${entityPath}/:id`,
-      subject: entityClass,
-    }, context);
+  ["created", "updated", "deleted"].map((action) => {
+    context.addChunk(
+      generateDomainEvent(
+        {
+          entityName: entityClass,
+          eventAction: action,
+          eventId: `${lower(entityClass)}/${action}`,
+        },
+        context
+      )
+    );
   });
 
-  const getAction = generateQueryAction({
-    subject: entityClass,
-    path: `/${entityPath}/:id`,
-    requestType: null,
-    responseType: null,
-    contextType: null,
-  }, context);
+  context.addChunk(
+    generateQueryHandler(
+      {
+        entityName: entityClass,
+        actionName: "find",
+        actor: `${entityClass}Finder`,
+        returnType: `${entityClass}View`,
+        returnsView: true,
+        queryProperties: [
+          { name: "id", valueType: entityIdClass, prop: "fromValue" },
+        ],
+      },
+      context
+    )
+  );
 
-  const getAllAction = generateQueryAction({
-    subject: plural(entityClass),
-    path: `/${entityPath}`,
-    requestType: null,
-    responseType: null,
-    contextType: null,
-  }, context);
+  context.addChunk(
+    generateEntityRepositoryInterface(
+      {
+        entityName: entityClass,
+      },
+      context
+    )
+  );
 
-  return {
-    entityId,
-    aggregateRoot,
-    createdEvent,
-    createCommand,
-    createCommandHandler,
-    updatedEvent,
-    updateCommand,
-    updateCommandHandler,
-    deletedEvent,
-    deleteCommand,
-    deleteCommandHandler,
-    findQuery,
-    findQueryHandler,
-    repository,
-    creator,
-    finder,
-    updater,
-    deleter,
-    deleteAction,
-    postAction,
-    putAction,
-    getAction,
-    getAllAction,
-    view,
-  };
-}
+  context.addChunk(
+    generateEntityCreator(
+      {
+        entityName: entityClass,
+      },
+      context
+    )
+  );
+
+  context.addChunk(
+    generateEntityFinder(
+      {
+        entityName: entityClass,
+      },
+      context
+    )
+  );
+
+  context.addChunk(
+    generateEntityUpdater(
+      {
+        entityName: entityClass,
+      },
+      context
+    )
+  );
+
+  context.addChunk(
+    generateEntityDeleter(
+      {
+        entityName: entityClass,
+      },
+      context
+    )
+  );
+
+  ["delete", "post", "put"].map((action) => {
+    context.addChunk(
+      generateCommandAction(
+        {
+          method: action.toUpperCase(),
+          path: action === "post" ? `/${entityPath}` : `/${entityPath}/:id`,
+          subject: entityClass,
+        },
+        context
+      )
+    );
+  });
+
+  context.addChunk(
+    generateQueryAction(
+      {
+        subject: entityClass,
+        path: `/${entityPath}/:id`,
+        requestType: null,
+        responseType: null,
+        contextType: null,
+      },
+      context
+    )
+  );
+
+  context.addChunk(
+    generateQueryAction(
+      {
+        subject: plural(entityClass),
+        path: `/${entityPath}`,
+        requestType: null,
+        responseType: null,
+        contextType: null,
+      },
+      context
+    )
+  );
+
+  return context.getChunks();
+};

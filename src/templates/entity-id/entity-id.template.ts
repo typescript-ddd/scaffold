@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityId } from "./entity-id.generator";
 import {
@@ -23,7 +23,7 @@ export class EntityIdTemplate
   readonly defaultValues = {
     entityName: "User",
   };
-  generate(values: EntityIdTemplateValues, context: GenerateContext): string {
-    return generateEntityId(values, context);
+  generate(values: EntityIdTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateEntityId(values, context, chunkName);
   }
 }

@@ -11,7 +11,7 @@ describe("Command", () => {
   });
 
   it("Should render the command template", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
         actionName: "Create",
@@ -26,6 +26,8 @@ describe("Command", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("CreateEntityCommand");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

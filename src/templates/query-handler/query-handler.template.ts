@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateQueryHandler } from "./query-handler.generator";
 import {
@@ -57,7 +57,7 @@ export class QueryHandlerTemplate
     returnsView: true,
     queryProperties: [{ name: "name", valueType: "string" }],
   };
-  generate(values: QueryHandlerTemplateValues, context: GenerateContext): string {
+  generate(values: QueryHandlerTemplateValues, context: GenerateContext): Chunk {
     return generateQueryHandler(values, context);
   }
 }

@@ -1,13 +1,13 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { ValueObjectTemplateValues } from "./value-object.types";
-
 
 export const generateValueObject = (
   values: ValueObjectTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const {
     name,
     valueType = "string",
@@ -16,10 +16,13 @@ export const generateValueObject = (
     generateValueGetters = false,
   } = values;
   const className = strings.capitalize(name);
-
+  const {
+    fileName = `${strings.kebab(name)}.ts`,
+    projectPath = ["domain", "model"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    context.fileName,
+    fileName,
     `
 export class ${className} extends ValueObject<${valueType}> {}    
 `
@@ -95,7 +98,9 @@ export class ${className} extends ValueObject<${valueType}> {}
           tags: [
             {
               tagName: "returns",
-              text: `{${prop.valueType}} - The ${strings.lower(prop.name)} value.`,
+              text: `{${prop.valueType}} - The ${strings.lower(
+                prop.name
+              )} value.`,
             },
           ],
         });
@@ -166,7 +171,11 @@ export class ${className} extends ValueObject<${valueType}> {}
       ],
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "ValueObject",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

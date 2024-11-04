@@ -12,8 +12,10 @@ describe("EntityId", () => {
   });
 
   it("Should render the entity id component", () => {
-    const output = template.generate({ entityName: "User" }, context);
+    const chunk = template.generate({ entityName: "User" }, context);
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("EntityId");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

@@ -16,7 +16,7 @@ describe("query", () => {
       namedImports: ["UserId"],
     });
 
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
         actionName: "find",
@@ -27,6 +27,8 @@ describe("query", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("Query");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

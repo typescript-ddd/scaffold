@@ -1,12 +1,13 @@
 import { Project } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { DomainEventTemplateValues } from "./domain-event.types";
 
 export const generateDomainEvent = (
   values: DomainEventTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const {
     entityName,
     eventAction,
@@ -16,9 +17,13 @@ export const generateDomainEvent = (
   const actionType = strings.capitalize(eventAction);
   const className = [entityType, actionType, "Event"].join("");
   const entityIdType = `${entityType}Id`;
+  const {
+    fileName = `${strings.kebab(eventAction, entityName, "event")}.ts`,
+    projectPath = ["domain", "event"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${className} extends DomainEvent<${entityType}> {}    
 `
@@ -28,7 +33,7 @@ export class ${className} extends DomainEvent<${entityType}> {}
     moduleSpecifier: `@typescript-ddd/core`,
     namedImports: ["DomainEvent"],
   });
-  
+
   context.addImportDeclaration({
     moduleSpecifier: context.resolveDir("domain"),
     namedImports: [entityType, entityIdType],
@@ -70,7 +75,11 @@ export class ${className} extends DomainEvent<${entityType}> {}
     ],
   });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || `Entity${actionType}DomainEvent`,
+    content: sourceFile.getFullText(),
+    fileName,
+    projectPath,
+    values,
+  };
 };

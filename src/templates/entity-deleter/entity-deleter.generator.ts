@@ -1,22 +1,26 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { EntityDeleterTemplateValues } from "./entity-deleter.types";
 
 export const generateEntityDeleter = (
   values: EntityDeleterTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName } = values;
   const entityDeleterType = `${strings.capitalize(entityName)}Deleter`;
   const repositoryType = `${strings.capitalize(entityName)}Repository`;
   const entityType = strings.capitalize(entityName);
   const entityIdType = `${entityType}Id`;
   const finderType = `${strings.capitalize(entityName)}Finder`;
-
+  const {
+    fileName = `${strings.kebab(entityName, "deleter")}.ts`,
+    projectPath = ["application", "delete"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${entityDeleterType} {}    
 `
@@ -126,7 +130,11 @@ export class ${entityDeleterType} {}
       ],
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "EntityDeleter",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

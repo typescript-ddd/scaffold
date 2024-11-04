@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateDomainEvent } from "./domain-event.generator";
 import {
@@ -36,7 +36,7 @@ export class DomainEventTemplate
     eventAction: "Created",
     eventId: "user/created",
   };
-  generate(values: DomainEventTemplateValues, context: GenerateContext): string {
-    return generateDomainEvent(values, context);
+  generate(values: DomainEventTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateDomainEvent(values, context, chunkName);
   }
 }

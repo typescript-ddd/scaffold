@@ -20,9 +20,11 @@ describe("QueryAction", () => {
         };
 
         // Act
-        const output = template.generate(options, context);
+        const chunk = template.generate(options, context);
 
         // Assert
-        expect(output).toMatchSnapshot();
+        expect(chunk).toBeDefined();
+        expect(chunk.name).toBe("QueryAction");
+        expect(chunk.content).toMatchSnapshot();
     }); 
 })

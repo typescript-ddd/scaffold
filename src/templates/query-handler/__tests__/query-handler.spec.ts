@@ -16,7 +16,7 @@ describe("CommandHandler", () => {
       namedImports: ["UserView"],
     });
 
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
         actor: "UserFinder",
@@ -28,6 +28,8 @@ describe("CommandHandler", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("QueryHandler");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

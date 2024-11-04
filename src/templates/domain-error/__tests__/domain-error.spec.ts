@@ -19,10 +19,12 @@ describe("DomainError", () => {
     };
 
     // Act
-    const output = template.generate(options, context);
-
+    const chunk = template.generate(options, context);
+    
     // Assert
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("DomainError");
+    expect(chunk.content).toMatchSnapshot();
   });
 
   it("should generate domain error with properties", () => {
@@ -41,9 +43,11 @@ describe("DomainError", () => {
     })
 
     // Act
-    const output = template.generate(options, context);
+    const chunk = template.generate(options, context);
 
     // Assert
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("DomainError");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

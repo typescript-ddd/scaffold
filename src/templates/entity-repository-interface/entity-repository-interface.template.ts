@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityRepositoryInterface } from "./entity-repository-interface.generator";
 import {
@@ -23,7 +23,7 @@ export class EntityRepositoryInterfaceTemplate
   readonly defaultValues = {
     entityName: "User",
   };
-  generate(values: EntityRepositoryInterfaceTemplateValues, context: GenerateContext): string {
-    return generateEntityRepositoryInterface(values, context);
+  generate(values: EntityRepositoryInterfaceTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateEntityRepositoryInterface(values, context, chunkName);
   }
 }

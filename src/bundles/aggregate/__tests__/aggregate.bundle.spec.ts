@@ -1,19 +1,23 @@
+import { ContextBuilder } from "../../../templates";
 import { generateAggregateBundle } from "../aggregate-bundle.generator";
 
 describe("AggregateBundle", () => {
 
     it("should generate an aggregate bundle", () => {
 
-        const bundle = generateAggregateBundle({
+        const context = ContextBuilder.build("@contexts/users");
+
+        generateAggregateBundle({
             entityName: "User",
             properties: [
                 { name: "name", valueType: "string" },
                 { name: "email", valueType: "string" },
             ],
             trackable: true,
-        }, "@contexts/users");
+        }, context);
 
-        console.log(bundle);
+        const chunks = context.getChunks();
 
+        expect(chunks).toHaveLength(24);
     });
 });

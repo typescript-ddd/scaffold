@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateDomainError } from "./domain-error.generator";
 import {
@@ -36,7 +36,11 @@ export class DomainErrorTemplate
     message: "User for {{id}} already exists.",
     parameters: [{ name: "id", valueType: "UserId" }],
   };
-  generate(values: DomainErrorTemplateValues, context: GenerateContext): string {
-    return generateDomainError(values, context);
+  generate(
+    values: DomainErrorTemplateValues,
+    context: GenerateContext,
+    chunkName?: string
+  ): Chunk {
+    return generateDomainError(values, context, chunkName);
   }
 }

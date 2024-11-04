@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateCommand } from "./command.generator";
 import { CommandTemplateOptions, CommandTemplateValues } from "./command.types";
@@ -33,7 +33,7 @@ export class CommandTemplate
     entityName: "User",
     properties: [],
   };
-  generate(values: CommandTemplateValues, context: GenerateContext): string {
-    return generateCommand(values, context);
+  generate(values: CommandTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateCommand(values, context, chunkName);
   }
 }

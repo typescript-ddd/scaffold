@@ -11,7 +11,7 @@ describe("EntityView", () => {
   });
 
   it("Should render the entity view template", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
         properties: [
@@ -22,6 +22,8 @@ describe("EntityView", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("EntityView");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

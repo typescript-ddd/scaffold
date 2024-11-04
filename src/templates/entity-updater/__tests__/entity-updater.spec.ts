@@ -11,13 +11,15 @@ describe("EntityUpdater", () => {
   });
 
   it("Should render the entity updater template", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         entityName: "User",
       },
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("EntityUpdater");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

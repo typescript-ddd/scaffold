@@ -11,16 +11,18 @@ describe("ValueObject", () => {
   });
 
   it("Should render the value object component", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       { name: "FirstName", valueType: "string" },
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("ValueObject");
+    expect(chunk.content).toMatchSnapshot();
   });
 
   it("Should render the value object component with properties", () => {
-    const output = template.generate(
+    const chunk = template.generate(
       {
         name: "Phone",
         valueType: "PhoneProps",
@@ -30,6 +32,8 @@ describe("ValueObject", () => {
       context
     );
 
-    expect(output).toMatchSnapshot();
+    expect(chunk).toBeDefined();
+    expect(chunk.name).toBe("ValueObject");
+    expect(chunk.content).toMatchSnapshot();
   });
 });

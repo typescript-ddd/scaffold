@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityUpdater } from "./entity-updater.generator";
 import {
@@ -23,7 +23,7 @@ export class EntityUpdaterTemplate
   readonly defaultValues = {
     entityName: "User",
   };
-  generate(values: EntityUpdaterTemplateValues, context: GenerateContext): string {
+  generate(values: EntityUpdaterTemplateValues, context: GenerateContext): Chunk {
     return generateEntityUpdater(values, context);
   }
 }

@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityFinder } from "./entity-finder.generator";
 import {
@@ -7,8 +7,7 @@ import {
 } from "./entity-finder.types";
 
 export class EntityFinderTemplate
-  implements
-    Template<EntityFinderTemplateValues, EntityFinderTemplateOptions>
+  implements Template<EntityFinderTemplateValues, EntityFinderTemplateOptions>
 {
   readonly name = "Entity Finder";
   readonly description = "Generates an entity finder";
@@ -23,7 +22,11 @@ export class EntityFinderTemplate
   readonly defaultValues = {
     entityName: "User",
   };
-  generate(values: EntityFinderTemplateValues, context: GenerateContext): string {
-    return generateEntityFinder(values, context);
+  generate(
+    values: EntityFinderTemplateValues,
+    context: GenerateContext,
+    chunkName?: string
+  ): Chunk {
+    return generateEntityFinder(values, context, chunkName);
   }
 }

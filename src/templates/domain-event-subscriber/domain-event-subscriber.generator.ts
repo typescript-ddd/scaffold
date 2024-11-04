@@ -1,20 +1,23 @@
 import { Project } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { DomainEventSubscriberTemplateValues } from "./domain-event-subscriber.types";
-
 
 export const generateDomainEventSubscriber = (
   values: DomainEventSubscriberTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { eventName } = values;
   const eventType = strings.capitalize(eventName);
   const subscriberType = `${eventType}Subscriber`;
-
+  const {
+    fileName = `${strings.kebab(eventName, "subscriber")}.ts`,
+    projectPath = ["application", eventType],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${subscriberType} implements DomainEventSubscriber<${eventType}> {}    
 `
@@ -28,7 +31,7 @@ export class ${subscriberType} implements DomainEventSubscriber<${eventType}> {}
   context.addImportDeclaration({
     moduleSpecifier: context.resolveDir("domain", "event"),
     namedImports: [eventType],
-  })
+  });
 
   context.writeSourceFileImports(sourceFile);
 
@@ -47,7 +50,11 @@ export class ${subscriberType} implements DomainEventSubscriber<${eventType}> {}
       writer.writeLine(`// TODO: Implement subscriber logic.`);
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "DomainEventSubscriber",
+    content: sourceFile.getFullText(),
+    fileName,
+    projectPath,
+    values,
+  };
 };

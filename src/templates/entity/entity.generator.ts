@@ -1,21 +1,25 @@
 import { Project, Scope, StructureKind } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { EntityTemplateValues } from "./entity.types";
 
 export const generateEntity = (
   values: EntityTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName, properties = [], trackable = false } = values;
   const name = strings.capitalize(entityName);
   const idName = `${name}Id`;
-  const fileName = strings.kebab(entityName);
+  const {
+    fileName = `${strings.kebab(entityName)}.ts`,
+    projectPath = ["domain", "model"],
+  } = context.currentFile || {};
   const baseName = trackable ? "TrackableEntity" : "Entity";
 
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${fileName}.ts`,
+    fileName,
     `
 export interface Create${name}Props extends EntityCreateProps {}
 export interface Update${name}Props extends EntityUpdateProps<${idName}> {}
@@ -198,7 +202,11 @@ export class ${name} extends ${baseName}<${idName}> {}
       );
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "Entity",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

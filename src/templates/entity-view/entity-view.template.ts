@@ -1,4 +1,4 @@
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { Template } from "../shared/template";
 import { generateEntityView } from "./entity-view.generator";
 import {
@@ -30,7 +30,7 @@ export class EntityViewTemplate
     entityName: "User",
     properties: []
   };
-  generate(values: EntityViewTemplateValues, context: GenerateContext): string {
-    return generateEntityView(values, context);
+  generate(values: EntityViewTemplateValues, context: GenerateContext, chunkName?: string): Chunk {
+    return generateEntityView(values, context, chunkName);
   }
 }

@@ -1,6 +1,6 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
+import { Chunk, GenerateContext } from "../shared";
 import { QueryHandlerTemplateValues } from "./query-handler.types";
 
 const actorMap: Record<string, string> = {
@@ -9,8 +9,9 @@ const actorMap: Record<string, string> = {
 
 export const generateQueryHandler = (
   values: QueryHandlerTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const {
     entityName,
     actionName = "find",
@@ -26,10 +27,13 @@ export const generateQueryHandler = (
   const actorName = strings.lower(actorMap[actionName] ?? "finder");
 
   const className = `${actionType}${entityType}Handler`;
-
+  const {
+    fileName = `${strings.kebab(actionType, entityType, "query-handler")}.ts`,
+    projectPath = ["application", "find"],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${className} implements QueryHandler<${queryType}> {}    
 `
@@ -84,10 +88,14 @@ export class ${className} implements QueryHandler<${queryType}> {}
     })
     .setBodyText((writer) => {
       const isArray = returnType.endsWith("[]");
-      const returnName = isArray ? strings.plural(strings.lower(entityName)) : strings.lower(entityName);
+      const returnName = isArray
+        ? strings.plural(strings.lower(entityName))
+        : strings.lower(entityName);
 
       writer.writeLine(
-        `const ${returnName} = await this.${actorName}.${strings.camel(actionName)}(`
+        `const ${returnName} = await this.${actorName}.${strings.camel(
+          actionName
+        )}(`
       );
       queryProperties.forEach((property, index) => {
         writer.writeLine(
@@ -100,8 +108,14 @@ export class ${className} implements QueryHandler<${queryType}> {}
       if (!returnsView) {
         writer.writeLine(`return ${returnName};`);
       } else {
-        const viewCreator = returnType.endsWith("[]") ? returnType.slice(0, -2) : returnType;
-        writer.writeLine(`return ${viewCreator}.${isArray ? "createMany" : "create"}(${strings.lower(entityName)});`);
+        const viewCreator = returnType.endsWith("[]")
+          ? returnType.slice(0, -2)
+          : returnType;
+        writer.writeLine(
+          `return ${viewCreator}.${
+            isArray ? "createMany" : "create"
+          }(${strings.lower(entityName)});`
+        );
       }
     })
     .addJsDoc({
@@ -120,7 +134,11 @@ export class ${className} implements QueryHandler<${queryType}> {}
       ],
     });
 
-  let output = sourceFile.getFullText();
-
-  return output;
+  return {
+    name: chunkName || "QueryHandler",
+    fileName,
+    projectPath,
+    content: sourceFile.getFullText(),
+    values,
+  };
 };

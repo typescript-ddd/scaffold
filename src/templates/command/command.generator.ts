@@ -1,20 +1,24 @@
 import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
-import { GenerateContext } from "../shared";
-import { CommandTemplateValues } from "src/templates/command/command.types";
+import { Chunk, GenerateContext } from "../shared";
+import { CommandTemplateValues } from "./command.types";
 
 export const generateCommand = (
   values: CommandTemplateValues,
-  context: GenerateContext
-) => {
+  context: GenerateContext,
+  chunkName?: string
+): Chunk => {
   const { entityName, actionName, properties } = values;
   const commandName = `${strings.capitalize(actionName)}${strings.capitalize(
     entityName
   )}Command`;
-
+  const {
+    fileName = `${strings.kebab(actionName, entityName, "command")}.ts`,
+    projectPath = ["application", strings.lower(actionName)],
+  } = context.currentFile || {};
   const project = new Project();
   const sourceFile = project.createSourceFile(
-    `${context.fileName}.ts`,
+    fileName,
     `
 export class ${commandName} implements Command {}    
 `
@@ -54,7 +58,13 @@ export class ${commandName} implements Command {}
     })),
   });
 
-  let output = sourceFile.getFullText();
+  const content = sourceFile.getFullText();
 
-  return output;
+  return {
+    name: chunkName || `${strings.capitalize(actionName)}EntityCommand`,
+    fileName,
+    projectPath,
+    content,
+    values,
+  };
 };

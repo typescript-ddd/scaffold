@@ -17,7 +17,7 @@ describe("CommandHandler", () => {
             namedImports: ["UserView"],
         });
 
-        const output = template.generate(
+        const chunk = template.generate(
             {
                 entityName: "User",
                 actionName: "create",
@@ -31,6 +31,8 @@ describe("CommandHandler", () => {
             context
         );
 
-        expect(output).toMatchSnapshot();
+        expect(chunk).toBeDefined();
+        expect(chunk.name).toBe("CreateEntityCommandHandler");
+        expect(chunk.content).toMatchSnapshot();
     });    
 })
