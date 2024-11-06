@@ -1,4 +1,4 @@
-import { Project } from "ts-morph";
+import { Project, Scope } from "ts-morph";
 import { strings } from "../../utils";
 import { Chunk, GenerateContext } from "../shared";
 import { DomainEventTemplateValues } from "./domain-event.types";
@@ -46,15 +46,26 @@ export class ${className} extends DomainEvent<${entityType}> {}
     description: `Represents ${strings.describe(className)}.`,
   });
 
+  classDeclaration.addProperty({
+    name: "NAME",
+    type: "string",
+    initializer: `"${eventId}"`,
+    isReadonly: true,
+    isStatic: true,
+  });
+
   const constructorDeclaration = classDeclaration.addConstructor({
     parameters: [
       { name: "id", type: entityIdType },
       { name: "payload", type: entityType },
+      { name: "version", type: "number", hasQuestionToken: true, initializer: "0" },
     ],
   });
   constructorDeclaration.setBodyText((writer) => {
     writer.writeLine(`super(id, "${eventId}", payload);`);
+    writer.writeLine(`this.$version = version;`);
   });
+
   constructorDeclaration.addJsDoc({
     description: `Initializes a new instance of ${strings.describe(
       className
@@ -74,6 +85,12 @@ export class ${className} extends DomainEvent<${entityType}> {}
       },
     ],
   });
+
+  classDeclaration.addGetAccessor({
+    name: "version",
+    returnType: "number",
+    scope: Scope.Public,    
+  }).setBodyText(`return this.$version;`);
 
   return {
     name: chunkName || `Entity${actionType}DomainEvent`,

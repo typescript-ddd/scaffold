@@ -6,13 +6,20 @@ import { User, UserId } from "@src/domain";
 
 /** Represents a user created event. */
 export class UserCreatedEvent extends DomainEvent<User> {
+    static readonly NAME: string = "user/created";
+
     /**
      * Initializes a new instance of a user created event.
      * @param {UserId} id - The identifier of the user.
      * @param {User} payload - The user payload.
      */
-    constructor(id: UserId, payload: User) {
+    constructor(id: UserId, payload: User, version?: number = 0) {
         super(id, "user/created", payload);
+        this.$version = version;
+    }
+
+    public get version(): number {
+        return this.$version;
     }
 }    
 "

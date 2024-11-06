@@ -1,6 +1,6 @@
 {
   "name": "@typescript-ddd/scaffold",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -43,6 +43,7 @@
     "pluralize": "^8.0.0"
   },
   "dependencies": {
+    "@typescript-ddd/core": "^0.1.13",
     "pluralize": "^8.0.0",
     "ts-morph": "^24.0.0"
   }
